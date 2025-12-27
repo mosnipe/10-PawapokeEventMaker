@@ -800,3 +800,66 @@
   }
 }
 
+/* ============================================
+   フッター
+   ============================================ */
+
+.footer {
+  background-color: var(--color-surface);
+  border-top: var(--border-width-thin) solid var(--border-color);
+  padding: var(--spacing-lg);
+  margin-top: var(--spacing-2xl);
+}
+
+.footer-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.footer-credit {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-sm);
+  line-height: var(--line-height-normal);
+}
+
+.footer-credit a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.footer-credit a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.footer-link {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.footer-link a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.footer-link a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+/* スマートフォン対応 */
+@media (max-width: 768px) {
+  .footer {
+    padding: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+  }
+  
+  .footer-credit {
+    font-size: var(--font-size-xs);
+  }
+}
+
