@@ -7,7 +7,9 @@ import { STORAGE_TYPE } from './config.js';
 import * as eventService from './services/eventService.js';
 import * as googleSheetsService from './services/googleSheetsService.js';
 import { renderEventList } from './components/EventList.js';
-import { renderEventEditor, saveCurrentEvent, hasUnsavedChangesFlag } from './components/EventEditor.js';
+import { renderEventEditor, saveCurrentEvent, hasUnsavedChangesFlag, getCurrentEvent } from './components/EventEditor.js';
+import { renderEventSelect } from './components/EventSelect.js';
+import { renderPreviewInModal, renderPreviewFullscreen, cleanupPreview } from './components/EventPreview.js';
 
 // ストレージタイプに応じてサービスを選択
 const service = STORAGE_TYPE === 'googleSheets' ? googleSheetsService : eventService;
@@ -15,6 +17,8 @@ const service = STORAGE_TYPE === 'googleSheets' ? googleSheetsService : eventSer
 // 画面要素
 const eventListSection = document.getElementById('eventListSection');
 const eventEditorSection = document.getElementById('eventEditorSection');
+const eventSelectSection = document.getElementById('eventSelectSection');
+const previewSection = document.getElementById('previewSection');
 const modalOverlay = document.getElementById('modalOverlay');
 
 /**
@@ -32,6 +36,31 @@ function init() {
  * イベントハンドラーを設定
  */
 function setupEventHandlers() {
+  // イベント再生ボタン（トップページ）
+  document.getElementById('playEventBtn').onclick = () => {
+    showEventSelect();
+  };
+  
+  // ホームに戻るボタン（イベント選択画面）
+  document.getElementById('backToHomeBtn').onclick = () => {
+    showEventList();
+  };
+  
+  // イベントを再生してみるボタン（イベント編集画面）
+  document.getElementById('previewEventBtn').onclick = () => {
+    const currentEvent = getCurrentEvent();
+    if (currentEvent) {
+      showPreviewInModal(currentEvent);
+    } else {
+      showModal('エラー', 'イベントデータが読み込まれていません。');
+    }
+  };
+  
+  // プレビューを閉じるイベント
+  window.addEventListener('closePreview', () => {
+    hidePreview();
+  });
+  
   // 新規イベント作成ボタン
   document.getElementById('createEventBtn').onclick = async () => {
     try {
@@ -125,6 +154,8 @@ function setupEventHandlers() {
 async function showEventList() {
   eventListSection.style.display = 'block';
   eventEditorSection.style.display = 'none';
+  eventSelectSection.style.display = 'none';
+  previewSection.style.display = 'none';
   
   try {
     await renderEventList(
@@ -156,6 +187,8 @@ async function showEventList() {
 async function showEventEditor(eventId) {
   eventListSection.style.display = 'none';
   eventEditorSection.style.display = 'block';
+  eventSelectSection.style.display = 'none';
+  previewSection.style.display = 'none';
   
   try {
     await renderEventEditor(eventId);
@@ -218,6 +251,17 @@ function showModal(title, message, onConfirm = null, onCancel = null) {
 function hideModal() {
   modalOverlay.style.display = 'none';
   modalCallback = null;
+  modalCancelCallback = null;
+  // ボタンのテキストをリセット
+  const cancelBtn = document.getElementById('modalCancelBtn');
+  if (cancelBtn) {
+    cancelBtn.textContent = 'キャンセル';
+  }
+  // プレビューコンテナをクリア
+  const previewContainerModal = document.getElementById('previewContainerModal');
+  if (previewContainerModal) {
+    cleanupPreview();
+  }
 }
 
 /**
@@ -282,6 +326,73 @@ async function showExportDialog() {
   } catch (error) {
     showModal('エラー', `エクスポートに失敗しました: ${error.message}`);
   }
+}
+
+/**
+ * イベント選択画面を表示
+ */
+async function showEventSelect() {
+  eventListSection.style.display = 'none';
+  eventEditorSection.style.display = 'none';
+  eventSelectSection.style.display = 'block';
+  previewSection.style.display = 'none';
+  
+  try {
+    await renderEventSelect((event) => {
+      showPreviewFullscreen(event);
+    });
+  } catch (error) {
+    showModal('エラー', `イベント一覧の読み込みに失敗しました: ${error.message}`);
+  }
+}
+
+/**
+ * プレビューをモーダルで表示（イベント編集画面から）
+ * @param {Object} event - イベントデータ
+ */
+function showPreviewInModal(event) {
+  const modalMessage = document.getElementById('modalMessage');
+  modalMessage.innerHTML = '';
+  
+  const previewContainer = document.createElement('div');
+  previewContainer.id = 'previewContainerModal';
+  previewContainer.style.width = '100%';
+  previewContainer.style.minHeight = '500px';
+  
+  modalMessage.appendChild(previewContainer);
+  
+  showModal(
+    'イベントプレビュー',
+    previewContainer,
+    null,
+    () => {
+      cleanupPreview();
+    }
+  );
+  
+  renderPreviewInModal(event, previewContainer);
+}
+
+/**
+ * プレビューをフルスクリーンで表示（イベント選択画面から）
+ * @param {Object} event - イベントデータ
+ */
+function showPreviewFullscreen(event) {
+  eventListSection.style.display = 'none';
+  eventEditorSection.style.display = 'none';
+  eventSelectSection.style.display = 'none';
+  previewSection.style.display = 'block';
+  
+  renderPreviewFullscreen(event);
+}
+
+/**
+ * プレビューを非表示
+ */
+function hidePreview() {
+  cleanupPreview();
+  previewSection.style.display = 'none';
+  showEventList();
 }
 
 // アプリケーション起動

@@ -331,3 +331,159 @@
   }
 }
 
+/* ============================================
+   プレビュー画面
+   ============================================ */
+
+.preview-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md);
+  background-color: var(--color-surface);
+  border-bottom: var(--border-width-thin) solid var(--border-color);
+}
+
+.preview-title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.preview-game-screen {
+  flex: 1;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  padding: var(--spacing-lg);
+  min-height: 60vh;
+  background-color: var(--color-background);
+  position: relative;
+  overflow: hidden;
+}
+
+.preview-character {
+  width: 400px;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-character-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: none;
+}
+
+.preview-character-left {
+  justify-content: flex-start;
+}
+
+.preview-character-right {
+  justify-content: flex-end;
+}
+
+.preview-dialog-area {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--color-textbox-bg);
+  padding: var(--spacing-md);
+  min-height: 30vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-dialog-box {
+  background-color: white;
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  max-width: 70%;
+  width: 100%;
+  font-size: var(--font-size-lg);
+  box-shadow: var(--shadow-md);
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+}
+
+.preview-dialog-box.left {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+.preview-dialog-box.right {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.preview-dialog-text {
+  margin: 0;
+  font-family: var(--font-system);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-primary);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.preview-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md);
+  background-color: var(--color-surface);
+  border-top: var(--border-width-thin) solid var(--border-color);
+  gap: var(--spacing-md);
+}
+
+.preview-progress {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-bold);
+}
+
+/* モーダル内のプレビュー */
+#previewContainerModal {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+#previewContainerModal .preview-game-screen {
+  min-height: 400px;
+}
+
+#previewContainerModal .preview-character {
+  width: 200px;
+  height: 200px;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .preview-character {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .preview-dialog-box {
+    max-width: 90%;
+    font-size: var(--font-size-base);
+  }
+  
+  .preview-controls {
+    flex-direction: column;
+  }
+}
+

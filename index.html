@@ -29,9 +29,14 @@
         <section id="eventListSection" class="section">
             <div class="section-header">
                 <h2 class="section-title">イベント一覧</h2>
-                <button id="createEventBtn" class="button-primary">
-                    <span>+</span> 新規イベント作成
-                </button>
+                <div style="display: flex; gap: var(--spacing-md);">
+                    <button id="playEventBtn" class="button-secondary">
+                        ▶ イベント再生
+                    </button>
+                    <button id="createEventBtn" class="button-primary">
+                        <span>+</span> 新規イベント作成
+                    </button>
+                </div>
             </div>
             
             <div id="eventList" class="event-grid">
@@ -51,9 +56,14 @@
                     ← 一覧に戻る
                 </button>
                 <h2 class="section-title" id="editorTitle">イベント編集</h2>
-                <button id="saveEventBtn" class="button-primary">
-                    保存
-                </button>
+                <div style="display: flex; gap: var(--spacing-md);">
+                    <button id="previewEventBtn" class="button-secondary">
+                        ▶ イベントを再生してみる
+                    </button>
+                    <button id="saveEventBtn" class="button-primary">
+                        保存
+                    </button>
+                </div>
             </div>
 
             <div class="editor-container">
@@ -86,6 +96,29 @@
                     </div>
                 </div>
             </div>
+        </section>
+
+        <!-- イベント選択画面（再生用） -->
+        <section id="eventSelectSection" class="section" style="display: none;">
+            <div class="section-header">
+                <button id="backToHomeBtn" class="button-secondary">
+                    ← ホームに戻る
+                </button>
+                <h2 class="section-title">イベントを選択</h2>
+            </div>
+            
+            <div id="eventSelectList" class="event-grid">
+                <!-- イベントカードがここに動的に追加される -->
+            </div>
+            
+            <div id="emptyStateSelect" class="empty-state" style="display: none;">
+                <p>イベントがありません</p>
+            </div>
+        </section>
+
+        <!-- プレビュー画面（フルスクリーン） -->
+        <section id="previewSection" class="section" style="display: none;">
+            <div id="previewContainer"></div>
         </section>
     </main>
 
