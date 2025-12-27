@@ -7,7 +7,7 @@ import { STORAGE_TYPE } from './config.js';
 import * as eventService from './services/eventService.js';
 import * as googleSheetsService from './services/googleSheetsService.js';
 import { renderEventList } from './components/EventList.js';
-import { renderEventEditor } from './components/EventEditor.js';
+import { renderEventEditor, saveCurrentEvent, hasUnsavedChangesFlag } from './components/EventEditor.js';
 
 // ストレージタイプに応じてサービスを選択
 const service = STORAGE_TYPE === 'googleSheets' ? googleSheetsService : eventService;
@@ -44,16 +44,32 @@ function setupEventHandlers() {
   
   // 一覧に戻るボタン
   document.getElementById('backToListBtn').onclick = () => {
-    showEventList();
+    // 未保存の変更がある場合は確認
+    if (hasUnsavedChangesFlag()) {
+      showModal(
+        '未保存の変更',
+        '保存されていない変更があります。このまま一覧に戻りますか？',
+        () => {
+          showEventList();
+        }
+      );
+    } else {
+      showEventList();
+    }
   };
   
   // 保存ボタン
   document.getElementById('saveEventBtn').onclick = async () => {
     try {
-      // 保存完了メッセージを表示
-      showModal('保存完了', 'イベントを保存しました。', () => {
-        showEventList();
-      });
+      const savedEvent = await saveCurrentEvent();
+      if (savedEvent) {
+        // 保存完了メッセージを表示
+        showModal('保存完了', 'イベントを保存しました。', () => {
+          showEventList();
+        });
+      } else {
+        showModal('エラー', 'イベントの保存に失敗しました。');
+      }
     } catch (error) {
       showModal('エラー', `保存に失敗しました: ${error.message}`);
     }
