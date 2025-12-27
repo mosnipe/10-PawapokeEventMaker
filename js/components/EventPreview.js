@@ -347,27 +347,27 @@ async function showDialog(index) {
   const rightImage = document.getElementById('previewRightImage');
   
   if (leftImage && rightImage) {
-    // 画像をリセット
+    // 画像をリセット（visibilityで非表示にする）
     leftImage.src = '';
-    leftImage.style.display = 'none';
+    leftImage.style.visibility = 'hidden';
     rightImage.src = '';
-    rightImage.style.display = 'none';
+    rightImage.style.visibility = 'hidden';
     
     // 話者に応じて画像を表示
     if (dialog.imagePath) {
       if (dialog.speaker === 'left') {
         leftImage.src = dialog.imagePath;
-        leftImage.style.display = 'block';
+        leftImage.style.visibility = 'visible';
         leftImage.onerror = () => {
-          leftImage.style.display = 'none';
+          leftImage.style.visibility = 'hidden';
         };
         // 画像の読み込み完了を待つ
         await waitForImageLoad(leftImage);
       } else if (dialog.speaker === 'right') {
         rightImage.src = dialog.imagePath;
-        rightImage.style.display = 'block';
+        rightImage.style.visibility = 'visible';
         rightImage.onerror = () => {
-          rightImage.style.display = 'none';
+          rightImage.style.visibility = 'hidden';
         };
         // 画像の読み込み完了を待つ
         await waitForImageLoad(rightImage);
