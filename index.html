@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PawapokeEventMaker - イベント作成ツール</title>
+    
+    <!-- Googleフォントの読み込み -->
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <!-- CSSファイルの読み込み -->
+    <link rel="stylesheet" href="./css/design-system.css">
+    <link rel="stylesheet" href="./css/components.css">
+    <link rel="stylesheet" href="./css/main.css">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <h1 class="header-title">Pawapoke Event Maker</h1>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="main-container">
+        <!-- イベント一覧画面 -->
+        <section id="eventListSection" class="section">
+            <div class="section-header">
+                <h2 class="section-title">イベント一覧</h2>
+                <button id="createEventBtn" class="button-primary">
+                    <span>+</span> 新規イベント作成
+                </button>
+            </div>
+            
+            <div id="eventList" class="event-grid">
+                <!-- イベントカードがここに動的に追加される -->
+            </div>
+            
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <p>イベントがありません</p>
+                <p class="empty-state-hint">「新規イベント作成」ボタンからイベントを作成してください</p>
+            </div>
+        </section>
+
+        <!-- イベント編集画面 -->
+        <section id="eventEditorSection" class="section" style="display: none;">
+            <div class="section-header">
+                <button id="backToListBtn" class="button-secondary">
+                    ← 一覧に戻る
+                </button>
+                <h2 class="section-title" id="editorTitle">イベント編集</h2>
+                <button id="saveEventBtn" class="button-primary">
+                    保存
+                </button>
+            </div>
+
+            <div class="editor-container">
+                <!-- イベント基本情報 -->
+                <div class="card editor-card">
+                    <h3 class="card-title">基本情報</h3>
+                    <div class="form-group">
+                        <label class="form-label">イベント名</label>
+                        <input 
+                            type="text" 
+                            id="eventNameInput" 
+                            class="input" 
+                            placeholder="イベント名を入力してください"
+                            maxlength="100"
+                        >
+                    </div>
+                </div>
+
+                <!-- セリフ一覧 -->
+                <div class="card editor-card">
+                    <div class="card-header">
+                        <h3 class="card-title">セリフ一覧</h3>
+                        <button id="addDialogBtn" class="button-primary button-sm">
+                            + セリフを追加
+                        </button>
+                    </div>
+                    
+                    <div id="dialogList" class="dialog-list">
+                        <!-- セリフアイテムがここに動的に追加される -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- モーダル（確認ダイアログ等） -->
+    <div id="modalOverlay" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h3 id="modalTitle" class="modal-title"></h3>
+            <p id="modalMessage" class="modal-message"></p>
+            <div class="modal-actions">
+                <button id="modalCancelBtn" class="button-secondary">キャンセル</button>
+                <button id="modalConfirmBtn" class="button-primary">一覧へ戻る</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScriptファイルの読み込み -->
+    <script type="module" src="./js/main.js"></script>
+</body>
+</html>
+

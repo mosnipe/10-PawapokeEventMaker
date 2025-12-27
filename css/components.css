@@ -1,0 +1,286 @@
+/**
+ * コンポーネントスタイル
+ * 再利用可能なUIコンポーネントのスタイルを定義します
+ */
+
+/* ============================================
+   ボタン
+   ============================================ */
+
+.button-primary,
+.button-secondary {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  padding: 10px 20px;
+  border-radius: var(--border-radius-full);
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-base);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  text-decoration: none;
+}
+
+.button-primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.button-primary:hover {
+  background-color: var(--color-primary-dark);
+  transform: scale(1.05);
+  box-shadow: var(--shadow-lg);
+}
+
+.button-primary:active {
+  transform: scale(1.02);
+}
+
+.button-secondary {
+  background-color: var(--color-secondary);
+  color: white;
+}
+
+.button-secondary:hover {
+  background-color: var(--color-secondary-dark);
+  transform: scale(1.05);
+  box-shadow: var(--shadow-lg);
+}
+
+.button-secondary:active {
+  transform: scale(1.02);
+}
+
+/* ボタンサイズ */
+.button-sm {
+  padding: 8px 16px;
+  font-size: var(--font-size-sm);
+}
+
+.button-lg {
+  padding: 12px 24px;
+  font-size: var(--font-size-lg);
+}
+
+/* ボタン無効状態 */
+.button-primary:disabled,
+.button-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ============================================
+   カード
+   ============================================ */
+
+.card {
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-base);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.card-title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-md);
+  color: var(--color-text-primary);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+/* ============================================
+   入力フィールド
+   ============================================ */
+
+.input,
+.textarea {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: var(--border-width-thin) solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-base);
+  font-family: var(--font-system);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  transition: var(--transition-base);
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--border-color-focus);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.input:disabled,
+.textarea:disabled {
+  background-color: var(--color-background);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* ============================================
+   フォーム
+   ============================================ */
+
+.form-group {
+  margin-bottom: var(--spacing-md);
+}
+
+.form-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-text-primary);
+}
+
+.form-hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-top: var(--spacing-xs);
+}
+
+/* ============================================
+   モーダル
+   ============================================ */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--color-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn var(--transition-base);
+}
+
+.modal-content {
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-lg);
+  max-width: 90%;
+  max-height: 90%;
+  box-shadow: var(--shadow-xl);
+  animation: slideUp var(--transition-base);
+}
+
+.modal-title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-md);
+  color: var(--color-text-primary);
+}
+
+.modal-message {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-text-primary);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+}
+
+/* ============================================
+   アニメーション
+   ============================================ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ============================================
+   ローディング
+   ============================================ */
+
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================
+   メッセージ
+   ============================================ */
+
+.error-message {
+  color: var(--color-error);
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-xs);
+}
+
+.success-message {
+  color: var(--color-success);
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-xs);
+}
+
+.info-message {
+  color: var(--color-info);
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-xs);
+}
+

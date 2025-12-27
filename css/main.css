@@ -1,0 +1,333 @@
+/**
+ * メインスタイル
+ * ページ全体のレイアウトと画面固有のスタイルを定義します
+ */
+
+/* ============================================
+   ヘッダー
+   ============================================ */
+
+.header {
+  background-color: var(--color-primary);
+  color: white;
+  padding: var(--spacing-md) var(--spacing-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-md);
+}
+
+.header-title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+/* ============================================
+   メインコンテナ
+   ============================================ */
+
+.main-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+}
+
+/* ============================================
+   セクション
+   ============================================ */
+
+.section {
+  width: 100%;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.section-title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+/* ============================================
+   イベント一覧
+   ============================================ */
+
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.event-card {
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-base);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.event-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.event-card-thumbnail {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: var(--border-radius-sm);
+  margin-bottom: var(--spacing-md);
+  background-color: var(--color-background);
+}
+
+.event-card-id {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-xs);
+  font-family: var(--font-system);
+}
+
+.event-card-name {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-md);
+  word-break: break-word;
+}
+
+.event-card-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
+}
+
+.event-card-actions button {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-xs);
+}
+
+/* 空の状態 */
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-2xl);
+  color: var(--color-text-secondary);
+}
+
+.empty-state p {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-sm);
+}
+
+.empty-state-hint {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   イベント編集画面
+   ============================================ */
+
+.editor-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.editor-card {
+  margin-bottom: var(--spacing-lg);
+}
+
+.dialog-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.dialog-item {
+  background-color: var(--color-background);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-md);
+  border: var(--border-width-thin) solid var(--border-color);
+  position: relative;
+}
+
+.dialog-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.dialog-item-number {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-secondary);
+}
+
+.dialog-item-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.dialog-item-actions button {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-xs);
+}
+
+.dialog-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.dialog-item-text {
+  width: 100%;
+}
+
+.dialog-item-settings {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+.dialog-item-speaker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.dialog-item-image {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.speaker-options {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.speaker-option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.speaker-option input[type="radio"] {
+  width: auto;
+  margin: 0;
+}
+
+/* ============================================
+   レスポンシブデザイン
+   ============================================ */
+
+/* タブレット */
+@media (max-width: 1024px) {
+  .main-container {
+    padding: var(--spacing-md);
+  }
+  
+  .event-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: var(--spacing-md);
+  }
+  
+  .dialog-item-settings {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* スマートフォン */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: flex-start;
+  }
+  
+  .header-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .main-container {
+    padding: var(--spacing-sm);
+  }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .event-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .editor-container {
+    gap: var(--spacing-md);
+  }
+  
+  .dialog-item-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+  
+  .dialog-item-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .modal-content {
+    max-width: 95%;
+    padding: var(--spacing-md);
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+  }
+  
+  .modal-actions button {
+    width: 100%;
+  }
+}
+
+/* 小さなスマートフォン */
+@media (max-width: 480px) {
+  .header-title {
+    font-size: var(--font-size-xl);
+  }
+  
+  .section-title {
+    font-size: var(--font-size-xl);
+  }
+  
+  .button-primary,
+  .button-secondary {
+    padding: 8px 16px;
+    font-size: var(--font-size-sm);
+  }
+}
+
