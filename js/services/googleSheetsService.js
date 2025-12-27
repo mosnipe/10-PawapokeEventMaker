@@ -7,6 +7,26 @@ import { GOOGLE_SCRIPT_URL, FALLBACK_TO_LOCAL } from '../config.js';
 import * as localStorageService from './eventService.js';
 
 /**
+ * UTF-8文字列をbase64エンコード（マルチバイト文字対応）
+ * @param {string} str - エンコードする文字列
+ * @returns {string} base64エンコードされた文字列
+ */
+function base64Encode(str) {
+  // UTF-8エンコードしてからbase64エンコード
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+/**
+ * base64デコードしてUTF-8文字列に変換（マルチバイト文字対応）
+ * @param {string} str - base64エンコードされた文字列
+ * @returns {string} デコードされた文字列
+ */
+function base64Decode(str) {
+  // base64デコードしてからUTF-8デコード
+  return decodeURIComponent(escape(atob(str)));
+}
+
+/**
  * JSONP形式でGETリクエストを送信（CORS回避）
  * @param {string} url - リクエストURL（callbackパラメータを含む）
  * @returns {Promise<Object>} レスポンスデータ
@@ -58,7 +78,8 @@ async function request(method, data = null) {
     // データがある場合はURLパラメータとして追加
     if (data) {
       // データをbase64エンコードして送信（URL長さ制限を回避）
-      const encodedData = btoa(JSON.stringify(data));
+      // UTF-8エンコードしてからbase64エンコード（マルチバイト文字対応）
+      const encodedData = base64Encode(JSON.stringify(data));
       url += `&data=${encodeURIComponent(encodedData)}`;
     }
     
