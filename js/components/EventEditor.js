@@ -186,7 +186,11 @@ async function createDialogItem(dialog, index) {
     radio.value = side;
     radio.checked = dialog.speaker === side;
     radio.onchange = async () => {
-      await service.updateDialog(currentEventId, index, { speaker: side });
+      const updatedEvent = await service.updateDialog(currentEventId, index, { speaker: side });
+      // 更新後の最新データで再描画（他のセリフの状態を保持）
+      if (updatedEvent) {
+        await renderDialogList(updatedEvent.dialogs);
+      }
     };
     
     const label = document.createElement('label');
