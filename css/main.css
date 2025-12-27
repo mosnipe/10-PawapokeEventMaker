@@ -456,15 +456,14 @@
 }
 
 .preview-character-image {
-  width: auto;
-  height: auto;
-  max-width: 400px; /* 最大サイズを設定 */
+  width: 400px; /* 固定幅（サイズがまばらな画像も統一） */
+  height: 400px; /* 固定高さ（サイズがまばらな画像も統一） */
+  max-width: 400px;
   max-height: 400px;
-  object-fit: contain;
-  display: block; /* デフォルトで表示 */
+  object-fit: contain; /* アスペクト比を保持して収める */
+  display: none;
   position: relative;
   z-index: 12; /* 画像をさらに前面に */
-  visibility: hidden; /* 初期状態は非表示（displayはblockのまま） */
 }
 
 .preview-character-left {
@@ -475,12 +474,8 @@
   justify-content: flex-end;
 }
 
-/* セリフ表示エリア（ゲーム画面内の下部に絶対配置） */
+/* セリフ表示エリア（ゲーム画面の外、下部に配置） */
 .preview-dialog-area {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
   background-color: var(--color-textbox-bg); /* セリフエリアの背景色 */
   padding: var(--spacing-lg);
   display: flex;
@@ -488,7 +483,7 @@
   justify-content: center;
   width: 100%;
   min-height: 150px;
-  z-index: 20; /* キャラクターより前面 */
+  flex-shrink: 0;
   box-sizing: border-box;
 }
 
@@ -665,6 +660,8 @@
   }
   
   .preview-character-image {
+    width: 250px; /* 固定幅 */
+    height: 250px; /* 固定高さ */
     max-width: 250px;
     max-height: 250px;
   }
@@ -751,6 +748,8 @@
   }
   
   .preview-character-image {
+    width: 200px; /* 固定幅 */
+    height: 200px; /* 固定高さ */
     max-width: 200px;
     max-height: 200px;
   }

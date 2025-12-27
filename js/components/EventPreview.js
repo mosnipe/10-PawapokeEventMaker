@@ -145,7 +145,11 @@ function createPreviewContent() {
   characterLayer.appendChild(leftCharacter);
   characterLayer.appendChild(rightCharacter);
   
-  // セリフ表示エリア（ゲーム画面内に配置）
+  // ゲーム画面内に背景とキャラクターを配置
+  gameScreen.appendChild(backgroundLayer);
+  gameScreen.appendChild(characterLayer);
+  
+  // セリフ表示エリア（ゲーム画面の外、下部に配置）
   const dialogArea = document.createElement('div');
   dialogArea.className = 'preview-dialog-area';
   
@@ -159,11 +163,6 @@ function createPreviewContent() {
   
   dialogBox.appendChild(dialogText);
   dialogArea.appendChild(dialogBox);
-  
-  // ゲーム画面内にすべてのレイヤーを配置（ダイアログエリアも含む）
-  gameScreen.appendChild(backgroundLayer);
-  gameScreen.appendChild(characterLayer);
-  gameScreen.appendChild(dialogArea);
   
   // 操作ボタン
   const controls = document.createElement('div');
@@ -207,9 +206,10 @@ function createPreviewContent() {
   controls.appendChild(progress);
   controls.appendChild(nextBtn);
   
-  // 要素を順番に追加：ヘッダー → ゲーム画面（背景＋キャラクター＋セリフ） → 操作ボタン
+  // 要素を順番に追加：ヘッダー → ゲーム画面（背景＋キャラクター） → セリフ → 操作ボタン
   content.appendChild(header);
   content.appendChild(gameScreen);
+  content.appendChild(dialogArea);
   content.appendChild(controls);
   
   return content;
@@ -347,27 +347,27 @@ async function showDialog(index) {
   const rightImage = document.getElementById('previewRightImage');
   
   if (leftImage && rightImage) {
-    // 画像をリセット（visibilityで非表示にする）
+    // 画像をリセット
     leftImage.src = '';
-    leftImage.style.visibility = 'hidden';
+    leftImage.style.display = 'none';
     rightImage.src = '';
-    rightImage.style.visibility = 'hidden';
+    rightImage.style.display = 'none';
     
     // 話者に応じて画像を表示
     if (dialog.imagePath) {
       if (dialog.speaker === 'left') {
         leftImage.src = dialog.imagePath;
-        leftImage.style.visibility = 'visible';
+        leftImage.style.display = 'block';
         leftImage.onerror = () => {
-          leftImage.style.visibility = 'hidden';
+          leftImage.style.display = 'none';
         };
         // 画像の読み込み完了を待つ
         await waitForImageLoad(leftImage);
       } else if (dialog.speaker === 'right') {
         rightImage.src = dialog.imagePath;
-        rightImage.style.visibility = 'visible';
+        rightImage.style.display = 'block';
         rightImage.onerror = () => {
-          rightImage.style.visibility = 'hidden';
+          rightImage.style.display = 'none';
         };
         // 画像の読み込み完了を待つ
         await waitForImageLoad(rightImage);
