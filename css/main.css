@@ -44,6 +44,8 @@
   margin: 0 auto;
   padding: var(--spacing-lg);
   flex: 1;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 /* ============================================
@@ -281,6 +283,9 @@
   
   .main-container {
     padding: var(--spacing-sm);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   
   .section-header {
@@ -635,53 +640,68 @@
   .preview-content {
     max-width: 100%;
     border-radius: 0;
+    margin: 0; /* マージンを削除して横幅を確保 */
+    width: 100vw; /* ビューポート幅に合わせる */
+    box-sizing: border-box; /* パディングを含めた幅計算 */
   }
   
   /* プレビューヘッダー */
   .preview-header {
     padding: var(--spacing-sm);
     flex-wrap: wrap;
+    box-sizing: border-box;
   }
   
   .preview-title {
     font-size: var(--font-size-base);
+    word-break: break-word; /* 長いタイトルがはみ出さないように */
   }
   
   /* ゲーム画面 */
   .preview-game-screen {
     aspect-ratio: 16 / 9; /* 16:9 のアスペクト比を固定 */
     min-height: 300px;
+    width: 100%;
+    box-sizing: border-box;
   }
   
   /* キャラクター */
   .preview-character {
     width: 25%;
     max-width: 150px;
+    box-sizing: border-box;
   }
   
   .preview-character-image {
-    width: 250px; /* 固定幅 */
-    height: 250px; /* 固定高さ */
-    max-width: 250px;
-    max-height: 250px;
+    width: 100%; /* 親要素の幅に合わせる */
+    height: auto;
+    max-width: 150px; /* 最大幅を制限 */
+    max-height: 200px; /* 最大高さを制限 */
+    aspect-ratio: 1 / 1; /* 正方形を維持 */
+    object-fit: contain;
   }
   
   .preview-character-layer {
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-xs); /* パディングを小さく */
+    box-sizing: border-box;
   }
   
   /* ダイアログボックス */
   .preview-dialog-box {
-    width: 95%;
+    width: calc(100% - var(--spacing-md) * 2); /* パディングを考慮した幅 */
     max-width: 100%;
     padding: var(--spacing-md);
     min-height: 80px;
     font-size: var(--font-size-base);
+    box-sizing: border-box;
+    margin: 0 auto;
   }
   
   .preview-dialog-text {
     font-size: var(--font-size-sm);
     line-height: 1.6;
+    word-wrap: break-word; /* 長いテキストがはみ出さないように */
+    overflow-wrap: break-word;
   }
   
   /* 吹き出しの位置調整 */
@@ -697,15 +717,19 @@
   
   /* セリフエリア */
   .preview-dialog-area {
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm); /* パディングを小さく */
     min-height: 120px;
+    box-sizing: border-box;
+    width: 100%;
   }
   
   /* コントロール */
   .preview-controls {
     flex-direction: row;
     padding: var(--spacing-sm);
-    gap: var(--spacing-sm);
+    gap: var(--spacing-xs); /* ギャップを小さく */
+    box-sizing: border-box;
+    width: 100%;
   }
   
   #previewPrevBtn,
@@ -713,16 +737,21 @@
     padding: 8px 12px;
     font-size: var(--font-size-sm);
     flex: 1;
+    min-width: 0; /* flexアイテムの最小幅を0にして縮小を許可 */
+    box-sizing: border-box;
   }
   
   .preview-progress {
     font-size: var(--font-size-xs);
     padding: 0 var(--spacing-xs);
+    white-space: nowrap; /* テキストの折り返しを防ぐ */
   }
   
   /* モーダル内のプレビュー */
   #previewContainerModal {
     max-height: 80vh;
+    width: 100%;
+    box-sizing: border-box;
   }
   
   #previewContainerModal .preview-game-screen {
@@ -733,55 +762,80 @@
 /* 小さなスマートフォン */
 @media (max-width: 480px) {
   /* プレビュー画面 */
+  .preview-content {
+    width: 100vw;
+    margin: 0;
+  }
+  
   .preview-header {
     padding: var(--spacing-xs);
+    box-sizing: border-box;
   }
   
   .preview-title {
     font-size: var(--font-size-sm);
+    word-break: break-word;
   }
   
   /* キャラクター */
   .preview-character {
     width: 30%;
     max-width: 120px;
+    box-sizing: border-box;
   }
   
   .preview-character-image {
-    width: 200px; /* 固定幅 */
-    height: 200px; /* 固定高さ */
-    max-width: 200px;
-    max-height: 200px;
+    width: 100%; /* 親要素の幅に合わせる */
+    height: auto;
+    max-width: 120px; /* 最大幅を制限 */
+    max-height: 150px; /* 最大高さを制限 */
+    aspect-ratio: 1 / 1; /* 正方形を維持 */
+    object-fit: contain;
+  }
+  
+  .preview-character-layer {
+    padding: var(--spacing-xs); /* パディングをさらに小さく */
   }
   
   /* ダイアログボックス */
   .preview-dialog-box {
-    width: 98%;
+    width: calc(100% - var(--spacing-sm) * 2); /* パディングを考慮した幅 */
     padding: var(--spacing-sm);
     min-height: 60px;
     font-size: var(--font-size-sm);
+    box-sizing: border-box;
+    margin: 0 auto;
   }
   
   .preview-dialog-text {
     font-size: var(--font-size-xs);
     line-height: 1.5;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   
   /* セリフエリア */
   .preview-dialog-area {
-    padding: var(--spacing-sm);
+    padding: var(--spacing-xs); /* パディングをさらに小さく */
     min-height: 100px;
+    box-sizing: border-box;
+    width: 100%;
   }
   
   /* コントロール */
   .preview-controls {
     padding: var(--spacing-xs);
+    gap: var(--spacing-xs);
+    box-sizing: border-box;
+    width: 100%;
   }
   
   #previewPrevBtn,
   #previewNextBtn {
-    padding: 6px 10px;
+    padding: 6px 8px; /* パディングを小さく */
     font-size: var(--font-size-xs);
+    min-width: 0;
+    box-sizing: border-box;
   }
   
   /* イベント編集画面 */
