@@ -366,7 +366,7 @@
   align-items: flex-end;
   padding: var(--spacing-lg);
   min-height: 60vh;
-  background-color: var(--color-background);
+  background-color: #2a2a2a; /* 暗い背景（夜の街をイメージ） */
   position: relative;
   overflow: hidden;
 }
@@ -377,6 +377,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  z-index: 10; /* キャラクターを前面に表示 */
 }
 
 .preview-character-image {
@@ -384,6 +386,8 @@
   max-height: 100%;
   object-fit: contain;
   display: none;
+  position: relative;
+  z-index: 11; /* 画像をさらに前面に */
 }
 
 .preview-character-left {
@@ -399,16 +403,18 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: var(--color-textbox-bg);
+  background-color: var(--color-textbox-bg); /* アクアマリン（ミントグリーン） */
   padding: var(--spacing-md);
   min-height: 30vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 5; /* キャラクターより後ろ、背景より前 */
 }
 
 .preview-dialog-box {
   background-color: white;
+  border: 3px solid var(--color-primary); /* 緑のボーダー */
   border-radius: var(--border-radius-md);
   padding: var(--spacing-md);
   max-width: 70%;
@@ -418,16 +424,18 @@
   min-height: 100px;
   display: flex;
   align-items: center;
+  position: relative;
+  z-index: 6; /* セリフボックスを前面に */
 }
 
 .preview-dialog-box.left {
   margin-right: auto;
-  margin-left: 0;
+  margin-left: var(--spacing-md);
 }
 
 .preview-dialog-box.right {
   margin-left: auto;
-  margin-right: 0;
+  margin-right: var(--spacing-md);
 }
 
 .preview-dialog-text {

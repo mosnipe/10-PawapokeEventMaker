@@ -7,6 +7,7 @@ let currentDialogIndex = 0;
 let currentEvent = null;
 let previewContainer = null;
 let typeWriterTimer = null;
+let autoAdvanceTimer = null;
 
 /**
  * イベントをプレビュー表示（モーダル内）
@@ -138,6 +139,11 @@ function createPreviewContent() {
   prevBtn.textContent = '← 前へ';
   prevBtn.id = 'previewPrevBtn';
   prevBtn.onclick = () => {
+    // 自動進行を停止
+    if (autoAdvanceTimer) {
+      clearTimeout(autoAdvanceTimer);
+      autoAdvanceTimer = null;
+    }
     if (currentDialogIndex > 0) {
       showDialog(currentDialogIndex - 1);
     }
@@ -148,6 +154,11 @@ function createPreviewContent() {
   nextBtn.textContent = '次へ →';
   nextBtn.id = 'previewNextBtn';
   nextBtn.onclick = () => {
+    // 自動進行を停止
+    if (autoAdvanceTimer) {
+      clearTimeout(autoAdvanceTimer);
+      autoAdvanceTimer = null;
+    }
     if (currentDialogIndex < currentEvent.dialogs.length - 1) {
       showDialog(currentDialogIndex + 1);
     }
@@ -210,6 +221,16 @@ function showDialog(index) {
     return;
   }
   
+  // 既存のタイマーをクリア
+  if (typeWriterTimer) {
+    clearTimeout(typeWriterTimer);
+    typeWriterTimer = null;
+  }
+  if (autoAdvanceTimer) {
+    clearTimeout(autoAdvanceTimer);
+    autoAdvanceTimer = null;
+  }
+  
   currentDialogIndex = index;
   const dialog = currentEvent.dialogs[index];
   
@@ -255,7 +276,17 @@ function showDialog(index) {
   
   // タイプライター風にセリフを表示
   typeWriter(dialog.text || '', dialogText, () => {
-    // 表示完了後の処理（必要に応じて）
+    // 表示完了後、自動的に次のセリフへ進む（1秒後）
+    if (autoAdvanceTimer) {
+      clearTimeout(autoAdvanceTimer);
+    }
+    
+    // 最後のセリフでない場合のみ自動進行
+    if (index < currentEvent.dialogs.length - 1) {
+      autoAdvanceTimer = setTimeout(() => {
+        showDialog(index + 1);
+      }, 1000); // 1秒後に次のセリフへ
+    }
   });
   
   // ボタンの状態を更新
@@ -283,6 +314,10 @@ export function cleanupPreview() {
   if (typeWriterTimer) {
     clearTimeout(typeWriterTimer);
     typeWriterTimer = null;
+  }
+  if (autoAdvanceTimer) {
+    clearTimeout(autoAdvanceTimer);
+    autoAdvanceTimer = null;
   }
   currentEvent = null;
   currentDialogIndex = 0;
