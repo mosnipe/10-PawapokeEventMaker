@@ -15,11 +15,32 @@ let currentEvent = null; // 編集中のイベントデータ（メモリ上に�
 let hasUnsavedChanges = false; // 未保存の変更があるかどうか
 let addDialogBtnHandler = null; // イベントハンドラーを保持
 
-// 利用可能な画像ファイルのリスト（imgフォルダ内の画像）
-const AVAILABLE_IMAGES = [
-  { path: './img/pawapoke.jpg', name: 'pawapoke.jpg' },
-  { path: './img/sakura.png', name: 'sakura.png' }
-];
+// 利用可能な画像ファイルのリスト（動的に読み込む）
+let availableImages = [];
+
+/**
+ * 画像ファイルのリストを読み込む
+ * @returns {Promise<Array>} 画像ファイルのリスト
+ */
+async function loadAvailableImages() {
+  try {
+    const response = await fetch('./img/images.json');
+    if (!response.ok) {
+      throw new Error('画像リストの読み込みに失敗しました');
+    }
+    const imagePaths = await response.json();
+    
+    // パスからファイル名を抽出してオブジェクト配列に変換
+    return imagePaths.map(path => {
+      const fileName = path.split('/').pop();
+      return { path, name: fileName };
+    });
+  } catch (error) {
+    console.error('画像リストの読み込みエラー:', error);
+    // フォールバック: 空の配列を返す
+    return [];
+  }
+}
 
 /**
  * イベント編集画面を表示
@@ -464,7 +485,7 @@ function setupEventHandlers() {
  * 画像選択モーダルを表示
  * @param {number} dialogIndex - セリフのインデックス
  */
-function showImageSelector(dialogIndex) {
+async function showImageSelector(dialogIndex) {
   // モーダルオーバーレイを取得
   const modalOverlay = document.getElementById('modalOverlay');
   const modalTitle = document.getElementById('modalTitle');
@@ -479,6 +500,16 @@ function showImageSelector(dialogIndex) {
   
   // タイトルを設定
   modalTitle.textContent = 'キャラクター画像を選択';
+  
+  // ローディング表示
+  modalMessage.innerHTML = '<p>画像を読み込み中...</p>';
+  modalCancelBtn.style.display = 'none';
+  modalConfirmBtn.style.display = 'none';
+  modalOverlay.style.display = 'flex';
+  
+  // 画像リストを読み込む
+  const images = await loadAvailableImages();
+  availableImages = images;
   
   // 画像選択UIを作成
   const imageSelectorContainer = document.createElement('div');
@@ -523,7 +554,7 @@ function showImageSelector(dialogIndex) {
   imageSelectorContainer.appendChild(noImageOption);
   
   // 各画像オプションを作成
-  AVAILABLE_IMAGES.forEach(image => {
+  availableImages.forEach(image => {
     const imageOption = document.createElement('div');
     imageOption.className = 'image-option';
     imageOption.style.cursor = 'pointer';
