@@ -14,7 +14,7 @@ let autoAdvanceTimer = null;
  * @param {Object} event - イベントデータ
  * @param {HTMLElement} container - プレビューを表示するコンテナ要素
  */
-export function renderPreviewInModal(event, container) {
+export async function renderPreviewInModal(event, container) {
   if (!event || !event.dialogs || event.dialogs.length === 0) {
     container.innerHTML = '<p>イベントデータがありません</p>';
     return;
@@ -31,15 +31,18 @@ export function renderPreviewInModal(event, container) {
   const previewContent = createPreviewContent();
   container.appendChild(previewContent);
   
+  // DOM要素が完全にレンダリングされるまで待機
+  await waitForDOMReady();
+  
   // 最初のセリフを表示
-  showDialog(0);
+  await showDialog(0);
 }
 
 /**
  * イベントをプレビュー表示（フルスクリーン）
  * @param {Object} event - イベントデータ
  */
-export function renderPreviewFullscreen(event) {
+export async function renderPreviewFullscreen(event) {
   if (!event || !event.dialogs || event.dialogs.length === 0) {
     return;
   }
@@ -62,8 +65,11 @@ export function renderPreviewFullscreen(event) {
   const previewContent = createPreviewContent();
   container.appendChild(previewContent);
   
+  // DOM要素が完全にレンダリングされるまで待機
+  await waitForDOMReady();
+  
   // 最初のセリフを表示
-  showDialog(0);
+  await showDialog(0);
 }
 
 /**
@@ -166,14 +172,14 @@ function createPreviewContent() {
   prevBtn.className = 'button-secondary button-sm';
   prevBtn.textContent = '← 前へ';
   prevBtn.id = 'previewPrevBtn';
-  prevBtn.onclick = () => {
+  prevBtn.onclick = async () => {
     // 自動進行を停止
     if (autoAdvanceTimer) {
       clearTimeout(autoAdvanceTimer);
       autoAdvanceTimer = null;
     }
     if (currentDialogIndex > 0) {
-      showDialog(currentDialogIndex - 1);
+      await showDialog(currentDialogIndex - 1);
     }
   };
   
@@ -181,14 +187,14 @@ function createPreviewContent() {
   nextBtn.className = 'button-primary button-sm';
   nextBtn.textContent = '次へ →';
   nextBtn.id = 'previewNextBtn';
-  nextBtn.onclick = () => {
+  nextBtn.onclick = async () => {
     // 自動進行を停止
     if (autoAdvanceTimer) {
       clearTimeout(autoAdvanceTimer);
       autoAdvanceTimer = null;
     }
     if (currentDialogIndex < currentEvent.dialogs.length - 1) {
-      showDialog(currentDialogIndex + 1);
+      await showDialog(currentDialogIndex + 1);
     }
   };
   
@@ -239,10 +245,66 @@ function typeWriter(text, element, callback, speed = 25) {
 }
 
 /**
+ * DOM要素が完全にレンダリングされるまで待機
+ * @returns {Promise<void>}
+ */
+function waitForDOMReady() {
+  return new Promise((resolve) => {
+    // requestAnimationFrameを使用してブラウザのレンダリングサイクルに合わせる
+    requestAnimationFrame(() => {
+      // さらに1フレーム待機してCSSの適用を確実にする
+      requestAnimationFrame(() => {
+        // レイアウトの再計算を強制
+        const dialogText = document.getElementById('previewDialogText');
+        const dialogBox = document.getElementById('previewDialogBox');
+        const leftImage = document.getElementById('previewLeftImage');
+        const rightImage = document.getElementById('previewRightImage');
+        
+        if (dialogText && dialogBox && leftImage && rightImage) {
+          // 要素のサイズを取得してレイアウトを強制的に計算
+          dialogText.offsetHeight;
+          dialogBox.offsetHeight;
+          leftImage.offsetHeight;
+          rightImage.offsetHeight;
+        }
+        
+        resolve();
+      });
+    });
+  });
+}
+
+/**
+ * 画像の読み込み完了を待つ
+ * @param {HTMLImageElement} image - 画像要素
+ * @returns {Promise<void>}
+ */
+function waitForImageLoad(image) {
+  return new Promise((resolve) => {
+    if (!image.src) {
+      // 画像が設定されていない場合は即座に解決
+      resolve();
+      return;
+    }
+    
+    // 既に読み込み済みの場合は即座に解決
+    if (image.complete && image.naturalHeight !== 0) {
+      resolve();
+      return;
+    }
+    
+    // 読み込み完了を待つ
+    image.onload = () => resolve();
+    image.onerror = () => resolve(); // エラーでも続行
+  });
+}
+
+/**
  * セリフを表示
  * @param {number} index - セリフのインデックス
+ * @returns {Promise<void>}
  */
-function showDialog(index) {
+async function showDialog(index) {
   if (!currentEvent || !currentEvent.dialogs || index < 0 || index >= currentEvent.dialogs.length) {
     return;
   }
@@ -260,11 +322,20 @@ function showDialog(index) {
   currentDialogIndex = index;
   const dialog = currentEvent.dialogs[index];
   
+  // DOM要素が存在するまで待機
   const dialogText = document.getElementById('previewDialogText');
   const dialogBox = document.getElementById('previewDialogBox');
   
   if (!dialogText || !dialogBox) {
-    return;
+    // 要素が見つからない場合は再試行
+    await waitForDOMReady();
+    const retryDialogText = document.getElementById('previewDialogText');
+    const retryDialogBox = document.getElementById('previewDialogBox');
+    
+    if (!retryDialogText || !retryDialogBox) {
+      console.error('プレビュー要素が見つかりません');
+      return;
+    }
   }
   
   // テキストボックスのクラスをリセット
@@ -290,14 +361,21 @@ function showDialog(index) {
         leftImage.onerror = () => {
           leftImage.style.display = 'none';
         };
+        // 画像の読み込み完了を待つ
+        await waitForImageLoad(leftImage);
       } else if (dialog.speaker === 'right') {
         rightImage.src = dialog.imagePath;
         rightImage.style.display = 'block';
         rightImage.onerror = () => {
           rightImage.style.display = 'none';
         };
+        // 画像の読み込み完了を待つ
+        await waitForImageLoad(rightImage);
       }
     }
+    
+    // 画像読み込み後のレイアウト再計算
+    await waitForDOMReady();
   }
   
   // タイプライター風にセリフを表示
@@ -309,8 +387,8 @@ function showDialog(index) {
     
     // 最後のセリフでない場合のみ自動進行
     if (index < currentEvent.dialogs.length - 1) {
-      autoAdvanceTimer = setTimeout(() => {
-        showDialog(index + 1);
+      autoAdvanceTimer = setTimeout(async () => {
+        await showDialog(index + 1);
       }, 1000); // 1秒後に次のセリフへ
     }
   });

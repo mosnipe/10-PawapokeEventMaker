@@ -359,7 +359,7 @@ async function showEventSelect() {
  * プレビューをモーダルで表示（イベント編集画面から）
  * @param {Object} event - イベントデータ
  */
-function showPreviewInModal(event) {
+async function showPreviewInModal(event) {
   const modalMessage = document.getElementById('modalMessage');
   modalMessage.innerHTML = '';
   
@@ -379,20 +379,20 @@ function showPreviewInModal(event) {
     }
   );
   
-  renderPreviewInModal(event, previewContainer);
+  await renderPreviewInModal(event, previewContainer);
 }
 
 /**
  * プレビューをフルスクリーンで表示（イベント選択画面から）
  * @param {Object} event - イベントデータ
  */
-function showPreviewFullscreen(event) {
+async function showPreviewFullscreen(event) {
   eventListSection.style.display = 'none';
   eventEditorSection.style.display = 'none';
   eventSelectSection.style.display = 'none';
   previewSection.style.display = 'block';
   
-  renderPreviewFullscreen(event);
+  await renderPreviewFullscreen(event);
 }
 
 /**
