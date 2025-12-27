@@ -410,8 +410,10 @@
   position: relative;
   overflow: hidden;
   width: 100%;
-  aspect-ratio: 16 / 9; /* 横長の画角（16:9） */
+  height: 0;
+  padding-bottom: 56.25%; /* 16:9 のアスペクト比を固定（100% * 9/16 = 56.25%） */
   flex-shrink: 0; /* 縮小しない */
+  contain: layout style paint; /* レイアウトの再計算を防ぐ */
 }
 
 /* 背景レイヤー（キャラクターの奥） */
@@ -451,19 +453,22 @@
   justify-content: center;
   position: relative;
   z-index: 11; /* キャラクターを前面に表示 */
+  contain: layout style; /* レイアウトの再計算を防ぐ */
 }
 
 .preview-character-image {
-  width: auto;
-  height: auto;
-  min-width: 300px; /* 最小サイズを設定 */
-  min-height: 300px;
-  max-width: 400px; /* 最大サイズを設定（500pxから400pxに下げる） */
+  width: 400px; /* 固定幅 */
+  height: 400px; /* 固定高さ */
+  min-width: 400px;
+  min-height: 400px;
+  max-width: 400px;
   max-height: 400px;
   object-fit: contain;
   display: none;
   position: relative;
   z-index: 12; /* 画像をさらに前面に */
+  contain: layout style paint; /* レイアウトの再計算を防ぐ */
+  will-change: contents; /* パフォーマンス最適化 */
 }
 
 .preview-character-left {
@@ -482,9 +487,12 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+  height: 150px; /* 固定高さ */
   min-height: 150px;
+  max-height: 150px;
   flex-shrink: 0;
   border-top: 1px solid var(--color-border);
+  contain: layout style; /* レイアウトの再計算を防ぐ */
 }
 
 .preview-dialog-box {
@@ -496,12 +504,16 @@
   max-width: 800px;
   font-size: var(--font-size-lg);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  height: 100px; /* 固定高さ */
   min-height: 100px;
+  max-height: 100px;
   display: flex;
   align-items: center;
   position: relative;
   z-index: 21; /* セリフボックスを前面に */
   margin: 0 auto;
+  contain: layout style; /* レイアウトの再計算を防ぐ */
+  overflow: hidden; /* テキストがはみ出さないように */
 }
 
 /* 吹き出し（話者に応じて） */
@@ -648,7 +660,7 @@
   
   /* ゲーム画面 */
   .preview-game-screen {
-    aspect-ratio: 16 / 9;
+    padding-bottom: 56.25%; /* 16:9 のアスペクト比を固定 */
   }
   
   /* キャラクター */
@@ -658,8 +670,10 @@
   }
   
   .preview-character-image {
-    min-width: 150px;
-    min-height: 150px;
+    width: 250px; /* 固定幅 */
+    height: 250px; /* 固定高さ */
+    min-width: 250px;
+    min-height: 250px;
     max-width: 250px;
     max-height: 250px;
   }
@@ -746,8 +760,10 @@
   }
   
   .preview-character-image {
-    min-width: 120px;
-    min-height: 120px;
+    width: 200px; /* 固定幅 */
+    height: 200px; /* 固定高さ */
+    min-width: 200px;
+    min-height: 200px;
     max-width: 200px;
     max-height: 200px;
   }

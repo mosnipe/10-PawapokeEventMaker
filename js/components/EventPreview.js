@@ -347,11 +347,18 @@ async function showDialog(index) {
   const rightImage = document.getElementById('previewRightImage');
   
   if (leftImage && rightImage) {
-    // 画像をリセット
+    // 画像をリセット（先にサイズを固定してからリセット）
+    leftImage.style.width = '400px';
+    leftImage.style.height = '400px';
     leftImage.src = '';
     leftImage.style.display = 'none';
+    rightImage.style.width = '400px';
+    rightImage.style.height = '400px';
     rightImage.src = '';
     rightImage.style.display = 'none';
+    
+    // レイアウトの再計算を防ぐために、画像の読み込み前にサイズを確定
+    await waitForDOMReady();
     
     // 話者に応じて画像を表示
     if (dialog.imagePath) {
@@ -374,7 +381,7 @@ async function showDialog(index) {
       }
     }
     
-    // 画像読み込み後のレイアウト再計算
+    // 画像読み込み後のレイアウト再計算（サイズは固定されているので再計算は最小限）
     await waitForDOMReady();
   }
   
