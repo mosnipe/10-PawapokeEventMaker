@@ -300,6 +300,22 @@
     justify-content: flex-end;
   }
   
+  .dialog-item-settings {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+  
+  .image-button-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+  
+  .image-path-display {
+    font-size: var(--font-size-xs);
+    word-break: break-all;
+  }
+  
   .modal-content {
     max-width: 95%;
     padding: var(--spacing-md);
@@ -311,6 +327,25 @@
   
   .modal-actions button {
     width: 100%;
+  }
+  
+  /* 画像選択モーダル */
+  .image-selector-container {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: var(--spacing-sm);
+    max-height: 350px;
+  }
+  
+  .image-option {
+    padding: var(--spacing-xs);
+  }
+  
+  .image-option img {
+    height: 80px;
+  }
+  
+  .image-option div {
+    font-size: var(--font-size-xs);
   }
 }
 
@@ -588,18 +623,174 @@
 
 /* レスポンシブ対応 */
 @media (max-width: 768px) {
-  .preview-character {
-    width: 200px;
-    height: 200px;
+  /* プレビュー画面全体 */
+  .preview-content {
+    max-width: 100%;
+    border-radius: 0;
   }
   
-  .preview-dialog-box {
-    max-width: 90%;
+  /* プレビューヘッダー */
+  .preview-header {
+    padding: var(--spacing-sm);
+    flex-wrap: wrap;
+  }
+  
+  .preview-title {
     font-size: var(--font-size-base);
   }
   
+  /* ゲーム画面 */
+  .preview-game-screen {
+    aspect-ratio: 16 / 9;
+  }
+  
+  /* キャラクター */
+  .preview-character {
+    width: 25%;
+    max-width: 150px;
+  }
+  
+  .preview-character-image {
+    min-width: 150px;
+    min-height: 150px;
+    max-width: 250px;
+    max-height: 250px;
+  }
+  
+  .preview-character-layer {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  
+  /* ダイアログボックス */
+  .preview-dialog-box {
+    width: 95%;
+    max-width: 100%;
+    padding: var(--spacing-md);
+    min-height: 80px;
+    font-size: var(--font-size-base);
+  }
+  
+  .preview-dialog-text {
+    font-size: var(--font-size-sm);
+    line-height: 1.6;
+  }
+  
+  /* 吹き出しの位置調整 */
+  .preview-dialog-box.left::before,
+  .preview-dialog-box.left::after {
+    left: 20px;
+  }
+  
+  .preview-dialog-box.right::before,
+  .preview-dialog-box.right::after {
+    right: 20px;
+  }
+  
+  /* セリフエリア */
+  .preview-dialog-area {
+    padding: var(--spacing-md);
+    min-height: 120px;
+  }
+  
+  /* コントロール */
   .preview-controls {
+    flex-direction: row;
+    padding: var(--spacing-sm);
+    gap: var(--spacing-sm);
+  }
+  
+  #previewPrevBtn,
+  #previewNextBtn {
+    padding: 8px 12px;
+    font-size: var(--font-size-sm);
+    flex: 1;
+  }
+  
+  .preview-progress {
+    font-size: var(--font-size-xs);
+    padding: 0 var(--spacing-xs);
+  }
+  
+  /* モーダル内のプレビュー */
+  #previewContainerModal {
+    max-height: 80vh;
+  }
+  
+  #previewContainerModal .preview-game-screen {
+    min-height: 300px;
+  }
+}
+
+/* 小さなスマートフォン */
+@media (max-width: 480px) {
+  /* プレビュー画面 */
+  .preview-header {
+    padding: var(--spacing-xs);
+  }
+  
+  .preview-title {
+    font-size: var(--font-size-sm);
+  }
+  
+  /* キャラクター */
+  .preview-character {
+    width: 30%;
+    max-width: 120px;
+  }
+  
+  .preview-character-image {
+    min-width: 120px;
+    min-height: 120px;
+    max-width: 200px;
+    max-height: 200px;
+  }
+  
+  /* ダイアログボックス */
+  .preview-dialog-box {
+    width: 98%;
+    padding: var(--spacing-sm);
+    min-height: 60px;
+    font-size: var(--font-size-sm);
+  }
+  
+  .preview-dialog-text {
+    font-size: var(--font-size-xs);
+    line-height: 1.5;
+  }
+  
+  /* セリフエリア */
+  .preview-dialog-area {
+    padding: var(--spacing-sm);
+    min-height: 100px;
+  }
+  
+  /* コントロール */
+  .preview-controls {
+    padding: var(--spacing-xs);
+  }
+  
+  #previewPrevBtn,
+  #previewNextBtn {
+    padding: 6px 10px;
+    font-size: var(--font-size-xs);
+  }
+  
+  /* イベント編集画面 */
+  .dialog-item-settings {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+  
+  .image-button-container {
     flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  /* 画像選択モーダル */
+  .image-selector-container {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--spacing-sm);
+    max-height: 300px;
   }
 }
 
