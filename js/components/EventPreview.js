@@ -93,9 +93,17 @@ function createPreviewContent() {
   header.appendChild(closeBtn);
   header.appendChild(title);
   
-  // ゲーム画面風のコンテナ
+  // ゲーム画面風のコンテナ（背景＋キャラクター）
   const gameScreen = document.createElement('div');
   gameScreen.className = 'preview-game-screen';
+  
+  // 背景レイヤー
+  const backgroundLayer = document.createElement('div');
+  backgroundLayer.className = 'preview-background-layer';
+  
+  // キャラクターレイヤー
+  const characterLayer = document.createElement('div');
+  characterLayer.className = 'preview-character-layer';
   
   // 左側のキャラクター画像
   const leftCharacter = document.createElement('div');
@@ -115,7 +123,13 @@ function createPreviewContent() {
   rightImage.alt = '右キャラクター';
   rightCharacter.appendChild(rightImage);
   
-  // セリフ表示エリア
+  characterLayer.appendChild(leftCharacter);
+  characterLayer.appendChild(rightCharacter);
+  
+  gameScreen.appendChild(backgroundLayer);
+  gameScreen.appendChild(characterLayer);
+  
+  // セリフ表示エリア（独立したセクション）
   const dialogArea = document.createElement('div');
   dialogArea.className = 'preview-dialog-area';
   
@@ -172,12 +186,10 @@ function createPreviewContent() {
   controls.appendChild(progress);
   controls.appendChild(nextBtn);
   
-  gameScreen.appendChild(leftCharacter);
-  gameScreen.appendChild(rightCharacter);
-  gameScreen.appendChild(dialogArea);
-  
+  // 要素を順番に追加：ヘッダー → ゲーム画面（背景＋キャラクター） → セリフ → 操作ボタン
   content.appendChild(header);
   content.appendChild(gameScreen);
+  content.appendChild(dialogArea);
   content.appendChild(controls);
   
   return content;

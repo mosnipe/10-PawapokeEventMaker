@@ -361,14 +361,33 @@
 
 .preview-game-screen {
   flex: 1;
+  min-height: 60vh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 背景レイヤー（キャラクターの奥） */
+.preview-background-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, #2a2a2a 0%, #2a2a2a 50%, var(--color-textbox-bg) 50%, var(--color-textbox-bg) 100%);
+  z-index: 1; /* 最背面 */
+}
+
+/* キャラクターレイヤー（背景の前） */
+.preview-character-layer {
+  position: relative;
+  flex: 1;
   display: flex;
   justify-content: space-around;
   align-items: flex-end;
   padding: var(--spacing-lg);
-  min-height: 60vh;
-  background-color: #2a2a2a; /* 暗い背景（夜の街をイメージ） */
-  position: relative;
-  overflow: hidden;
+  z-index: 10; /* 背景より前面 */
 }
 
 .preview-character {
@@ -378,7 +397,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  z-index: 10; /* キャラクターを前面に表示 */
+  z-index: 11; /* キャラクターを前面に表示 */
 }
 
 .preview-character-image {
@@ -387,7 +406,7 @@
   object-fit: contain;
   display: none;
   position: relative;
-  z-index: 11; /* 画像をさらに前面に */
+  z-index: 12; /* 画像をさらに前面に */
 }
 
 .preview-character-left {
@@ -398,17 +417,15 @@
   justify-content: flex-end;
 }
 
+/* セリフ表示エリア（独立したセクション） */
 .preview-dialog-area {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
   background-color: var(--color-textbox-bg); /* アクアマリン（ミントグリーン） */
   padding: var(--spacing-md);
   min-height: 30vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
   z-index: 5; /* キャラクターより後ろ、背景より前 */
 }
 
