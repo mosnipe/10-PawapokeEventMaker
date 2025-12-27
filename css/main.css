@@ -337,9 +337,14 @@
 
 .preview-content {
   width: 100%;
-  height: 100%;
+  max-width: 1200px; /* イベント再生画面全体の最大幅 */
+  margin: 0 auto; /* 中央配置 */
   display: flex;
   flex-direction: column;
+  background-color: var(--color-surface);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
 }
 
 .preview-header {
@@ -364,7 +369,6 @@
   overflow: hidden;
   width: 100%;
   aspect-ratio: 16 / 9; /* 横長の画角（16:9） */
-  max-width: 100%;
   flex-shrink: 0; /* 縮小しない */
 }
 
@@ -388,7 +392,6 @@
   justify-content: space-between; /* 左右にキャラクターを配置 */
   align-items: flex-end;
   padding: var(--spacing-lg) var(--spacing-xl);
-  padding-bottom: 33%; /* ダイアログエリアの高さ分だけ下に余白 */
   z-index: 10; /* 背景より前面 */
   box-sizing: border-box;
 }
@@ -406,7 +409,7 @@
 
 .preview-character-image {
   max-width: 100%;
-  max-height: 70%; /* キャラクターを小さく表示 */
+  max-height: 90%; /* キャラクターを表示 */
   object-fit: contain;
   display: none;
   position: relative;
@@ -421,24 +424,17 @@
   justify-content: flex-end;
 }
 
-/* セリフ表示エリア（独立したセクション） */
+/* セリフ表示エリア（イベント再生画面内の下部セクション） */
 .preview-dialog-area {
-  background-color: transparent; /* 背景は透明にして、ゲーム画面の一部として表示 */
+  background-color: var(--color-textbox-bg); /* セリフエリアの背景色 */
   padding: var(--spacing-lg);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 33%; /* 画面下部の約1/3を占める */
-  z-index: 20; /* キャラクターより前面 */
-  pointer-events: none; /* クリックイベントを透過 */
-}
-
-.preview-dialog-area > * {
-  pointer-events: auto; /* ダイアログボックス内はクリック可能 */
+  width: 100%;
+  min-height: 150px;
+  flex-shrink: 0;
+  border-top: 1px solid var(--color-border);
 }
 
 .preview-dialog-box {
@@ -446,8 +442,8 @@
   border: 2px solid #90c695; /* 薄い緑のボーダー */
   border-radius: 8px;
   padding: var(--spacing-lg);
-  width: 85%;
-  max-width: 700px;
+  width: 90%;
+  max-width: 800px;
   font-size: var(--font-size-lg);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   min-height: 100px;

@@ -144,7 +144,6 @@ function createPreviewContent() {
   // ゲーム画面内にすべてのレイヤーを配置
   gameScreen.appendChild(backgroundLayer);
   gameScreen.appendChild(characterLayer);
-  gameScreen.appendChild(dialogArea);
   
   // 操作ボタン
   const controls = document.createElement('div');
@@ -188,9 +187,10 @@ function createPreviewContent() {
   controls.appendChild(progress);
   controls.appendChild(nextBtn);
   
-  // 要素を順番に追加：ヘッダー → ゲーム画面（背景＋キャラクター＋セリフ） → 操作ボタン
+  // 要素を順番に追加：ヘッダー → ゲーム画面（背景＋キャラクター） → セリフ → 操作ボタン
   content.appendChild(header);
   content.appendChild(gameScreen);
+  content.appendChild(dialogArea);
   content.appendChild(controls);
   
   return content;
