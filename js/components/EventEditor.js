@@ -5,6 +5,7 @@
 import { STORAGE_TYPE } from '../config.js';
 import * as eventService from '../services/eventService.js';
 import * as googleSheetsService from '../services/googleSheetsService.js';
+import { showLoading, hideLoading, replaceWithLoading } from '../utils/loading.js';
 
 // ストレージタイプに応じてサービスを選択
 const service = STORAGE_TYPE === 'googleSheets' ? googleSheetsService : eventService;
@@ -18,22 +19,38 @@ let addDialogBtnHandler = null; // イベントハンドラーを保持
  */
 export async function renderEventEditor(eventId) {
   currentEventId = eventId;
-  const event = await service.getEventById(eventId);
   
-  if (!event) {
-    console.error('イベントが見つかりません:', eventId);
-    return;
+  // ローディング表示
+  const editorTitle = document.getElementById('editorTitle');
+  const dialogList = document.getElementById('dialogList');
+  const restoreTitle = replaceWithLoading(editorTitle, '読み込み中...');
+  const restoreDialogList = replaceWithLoading(dialogList, 'セリフを読み込み中...');
+  
+  try {
+    const event = await service.getEventById(eventId);
+    
+    if (!event) {
+      console.error('イベントが見つかりません:', eventId);
+      restoreTitle();
+      restoreDialogList();
+      return;
+    }
+    
+    // 基本情報を設定
+    document.getElementById('eventNameInput').value = event.name;
+    editorTitle.textContent = `イベント編集: ${event.name}`;
+    
+    // イベントハンドラーを設定（先に設定）
+    setupEventHandlers();
+    
+    // セリフ一覧を表示
+    await renderDialogList(event.dialogs);
+  } catch (error) {
+    console.error('イベントの読み込みエラー:', error);
+    restoreTitle();
+    restoreDialogList();
+    throw error;
   }
-  
-  // 基本情報を設定
-  document.getElementById('eventNameInput').value = event.name;
-  document.getElementById('editorTitle').textContent = `イベント編集: ${event.name}`;
-  
-  // イベントハンドラーを設定（先に設定）
-  setupEventHandlers();
-  
-  // セリフ一覧を表示
-  await renderDialogList(event.dialogs);
 }
 
 /**
@@ -47,16 +64,25 @@ export async function renderDialogList(dialogs) {
     return;
   }
   
-  dialogList.innerHTML = '';
+  // ローディング表示
+  const restoreDialogList = replaceWithLoading(dialogList, 'セリフを読み込み中...');
   
-  for (let index = 0; index < dialogs.length; index++) {
-    const dialog = dialogs[index];
-    const dialogItem = await createDialogItem(dialog, index);
-    dialogList.appendChild(dialogItem);
+  try {
+    dialogList.innerHTML = '';
+    
+    for (let index = 0; index < dialogs.length; index++) {
+      const dialog = dialogs[index];
+      const dialogItem = await createDialogItem(dialog, index);
+      dialogList.appendChild(dialogItem);
+    }
+    
+    // セリフ一覧を再描画した後、イベントハンドラーを再設定
+    setupEventHandlers();
+  } catch (error) {
+    console.error('セリフ一覧の読み込みエラー:', error);
+    restoreDialogList();
+    throw error;
   }
-  
-  // セリフ一覧を再描画した後、イベントハンドラーを再設定
-  setupEventHandlers();
 }
 
 /**
@@ -95,9 +121,16 @@ async function createDialogItem(dialog, index) {
   
   moveUpBtn.onclick = async () => {
     if (index > 0) {
-      const result = await service.moveDialog(currentEventId, index, index - 1);
-      if (result) {
-        await renderDialogList(result.dialogs);
+      moveUpBtn.disabled = true;
+      try {
+        const result = await service.moveDialog(currentEventId, index, index - 1);
+        if (result) {
+          await renderDialogList(result.dialogs);
+        }
+      } catch (error) {
+        console.error('セリフの移動エラー:', error);
+      } finally {
+        moveUpBtn.disabled = false;
       }
     }
   };
@@ -109,9 +142,16 @@ async function createDialogItem(dialog, index) {
   moveDownBtn.disabled = index >= (event.dialogs.length - 1);
   moveDownBtn.onclick = async () => {
     if (index < event.dialogs.length - 1) {
-      const result = await service.moveDialog(currentEventId, index, index + 1);
-      if (result) {
-        await renderDialogList(result.dialogs);
+      moveDownBtn.disabled = true;
+      try {
+        const result = await service.moveDialog(currentEventId, index, index + 1);
+        if (result) {
+          await renderDialogList(result.dialogs);
+        }
+      } catch (error) {
+        console.error('セリフの移動エラー:', error);
+      } finally {
+        moveDownBtn.disabled = false;
       }
     }
   };
@@ -123,9 +163,20 @@ async function createDialogItem(dialog, index) {
   deleteBtn.disabled = event.dialogs.length <= 1;
   deleteBtn.onclick = async () => {
     if (event.dialogs.length > 1) {
-      const result = await service.deleteDialog(currentEventId, index);
-      if (result) {
-        await renderDialogList(result.dialogs);
+      deleteBtn.disabled = true;
+      const originalText = deleteBtn.textContent;
+      deleteBtn.textContent = '削除中...';
+      
+      try {
+        const result = await service.deleteDialog(currentEventId, index);
+        if (result) {
+          await renderDialogList(result.dialogs);
+        }
+      } catch (error) {
+        console.error('セリフの削除エラー:', error);
+        deleteBtn.textContent = originalText;
+      } finally {
+        deleteBtn.disabled = false;
       }
     }
   };
@@ -186,10 +237,21 @@ async function createDialogItem(dialog, index) {
     radio.value = side;
     radio.checked = dialog.speaker === side;
     radio.onchange = async () => {
-      const updatedEvent = await service.updateDialog(currentEventId, index, { speaker: side });
-      // 更新後の最新データで再描画（他のセリフの状態を保持）
-      if (updatedEvent) {
-        await renderDialogList(updatedEvent.dialogs);
+      // ラジオボタンを無効化
+      radio.disabled = true;
+      
+      try {
+        const updatedEvent = await service.updateDialog(currentEventId, index, { speaker: side });
+        // 更新後の最新データで再描画（他のセリフの状態を保持）
+        if (updatedEvent) {
+          await renderDialogList(updatedEvent.dialogs);
+        }
+      } catch (error) {
+        console.error('話者の更新エラー:', error);
+        // エラー時は元の状態に戻す
+        radio.checked = dialog.speaker === side;
+      } finally {
+        radio.disabled = false;
       }
     };
     
@@ -246,8 +308,17 @@ function setupEventHandlers() {
     // 既存のイベントハンドラーを削除してから新しいものを設定
     nameInput.oninput = null;
     nameInput.oninput = async () => {
-      await service.updateEvent(currentEventId, { name: nameInput.value });
-      document.getElementById('editorTitle').textContent = `イベント編集: ${nameInput.value || '無題のイベント'}`;
+      const editorTitle = document.getElementById('editorTitle');
+      const loading = showLoading(editorTitle, '保存中...');
+      
+      try {
+        await service.updateEvent(currentEventId, { name: nameInput.value });
+        editorTitle.textContent = `イベント編集: ${nameInput.value || '無題のイベント'}`;
+      } catch (error) {
+        console.error('イベント名の更新エラー:', error);
+      } finally {
+        hideLoading(loading);
+      }
     };
   }
   
@@ -276,6 +347,11 @@ function setupEventHandlers() {
       return;
     }
     
+    // ボタンを無効化してローディング表示
+    addDialogBtn.disabled = true;
+    const originalText = addDialogBtn.textContent;
+    addDialogBtn.textContent = '追加中...';
+    
     try {
       console.log('addDialogを呼び出します', currentEventId);
       const result = await service.addDialog(currentEventId);
@@ -291,6 +367,9 @@ function setupEventHandlers() {
     } catch (error) {
       console.error('セリフの追加に失敗しました:', error);
       alert(`セリフの追加に失敗しました: ${error.message}`);
+    } finally {
+      addDialogBtn.disabled = false;
+      addDialogBtn.textContent = originalText;
     }
   };
   
