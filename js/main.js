@@ -60,6 +60,13 @@ function setupEventHandlers() {
   
   // 保存ボタン
   document.getElementById('saveEventBtn').onclick = async () => {
+    const saveBtn = document.getElementById('saveEventBtn');
+    const originalText = saveBtn.textContent;
+    
+    // ボタンを非活性化
+    saveBtn.disabled = true;
+    saveBtn.textContent = '保存中...';
+    
     try {
       const savedEvent = await saveCurrentEvent();
       if (savedEvent) {
@@ -81,6 +88,10 @@ function setupEventHandlers() {
       }
     } catch (error) {
       showModal('エラー', `保存に失敗しました: ${error.message}`);
+    } finally {
+      // 処理完了後、ボタンを再度有効化
+      saveBtn.disabled = false;
+      saveBtn.textContent = originalText;
     }
   };
   
