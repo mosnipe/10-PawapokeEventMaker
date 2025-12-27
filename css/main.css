@@ -379,7 +379,7 @@
 
 .preview-content {
   width: 100%;
-  max-width: 1200px; /* イベント再生画面全体の最大幅 */
+  max-width: 1600px; /* イベント再生画面全体の最大幅を拡大 */
   margin: 0 auto; /* 中央配置 */
   display: flex;
   flex-direction: column;
@@ -456,10 +456,10 @@
 }
 
 .preview-character-image {
-  width: 400px; /* 固定幅（サイズがまばらな画像も統一） */
-  height: 400px; /* 固定高さ（サイズがまばらな画像も統一） */
-  max-width: 400px;
-  max-height: 400px;
+  width: 300px; /* 固定幅（サイズがまばらな画像も統一、PCレイアウトでは少し小さめに） */
+  height: 300px; /* 固定高さ（サイズがまばらな画像も統一、PCレイアウトでは少し小さめに） */
+  max-width: 300px;
+  max-height: 300px;
   object-fit: contain; /* アスペクト比を保持して収める */
   display: none;
   position: relative;
