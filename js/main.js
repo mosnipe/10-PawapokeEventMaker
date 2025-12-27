@@ -63,10 +63,19 @@ function setupEventHandlers() {
     try {
       const savedEvent = await saveCurrentEvent();
       if (savedEvent) {
-        // 保存完了メッセージを表示
-        showModal('保存完了', 'イベントを保存しました。', () => {
-          showEventList();
-        });
+        // 保存完了メッセージを表示（閉じる or 一覧に戻るの2択）
+        showModal(
+          '保存完了', 
+          'イベントを保存しました。', 
+          () => {
+            // 一覧に戻る
+            showEventList();
+          },
+          () => {
+            // 閉じる（編集画面に留まる）
+            // 何もしない（モーダルを閉じるだけ）
+          }
+        );
       } else {
         showModal('エラー', 'イベントの保存に失敗しました。');
       }
@@ -77,6 +86,9 @@ function setupEventHandlers() {
   
   // モーダルのキャンセルボタン
   document.getElementById('modalCancelBtn').onclick = () => {
+    if (modalCancelCallback) {
+      modalCancelCallback();
+    }
     hideModal();
   };
   
@@ -143,14 +155,16 @@ async function showEventEditor(eventId) {
 }
 
 let modalCallback = null;
+let modalCancelCallback = null;
 
 /**
  * モーダルを表示
  * @param {string} title - タイトル
  * @param {string} message - メッセージ
  * @param {Function} onConfirm - 確認時のコールバック
+ * @param {Function} onCancel - キャンセル時のコールバック（指定時はキャンセルボタンも表示）
  */
-function showModal(title, message, onConfirm = null) {
+function showModal(title, message, onConfirm = null, onCancel = null) {
   document.getElementById('modalTitle').textContent = title;
   const modalMessage = document.getElementById('modalMessage');
   if (typeof message === 'string') {
@@ -163,10 +177,25 @@ function showModal(title, message, onConfirm = null) {
   }
   
   modalCallback = onConfirm;
+  const confirmBtn = document.getElementById('modalConfirmBtn');
+  const cancelBtn = document.getElementById('modalCancelBtn');
+  
   if (onConfirm) {
-    document.getElementById('modalConfirmBtn').style.display = 'inline-flex';
+    confirmBtn.style.display = 'inline-flex';
   } else {
-    document.getElementById('modalConfirmBtn').style.display = 'none';
+    confirmBtn.style.display = 'none';
+  }
+  
+  // キャンセルコールバックが指定されている場合は、キャンセルボタンのテキストを変更
+  if (typeof onCancel === 'function') {
+    cancelBtn.style.display = 'inline-flex';
+    cancelBtn.textContent = '閉じる';
+    modalCancelCallback = onCancel;
+  } else {
+    // デフォルトの動作（モーダルを閉じるだけ）
+    cancelBtn.style.display = onConfirm ? 'inline-flex' : 'none';
+    cancelBtn.textContent = 'キャンセル';
+    modalCancelCallback = null;
   }
   
   modalOverlay.style.display = 'flex';
