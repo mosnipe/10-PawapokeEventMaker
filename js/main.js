@@ -36,6 +36,15 @@ function init() {
  * イベントハンドラーを設定
  */
 function setupEventHandlers() {
+  // ヘッダータイトル（トップページに戻る）
+  const headerTitle = document.querySelector('.header-title');
+  if (headerTitle) {
+    headerTitle.style.cursor = 'pointer';
+    headerTitle.onclick = () => {
+      showEventList();
+    };
+  }
+  
   // イベント再生ボタン（トップページ）
   document.getElementById('playEventBtn').onclick = () => {
     showEventSelect();
