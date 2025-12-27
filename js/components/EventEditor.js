@@ -123,6 +123,27 @@ export function renderDialogList(dialogs) {
       dialogList.appendChild(dialogItem);
     }
     
+    // セリフ一覧の最後に追加ボタンを配置
+    const addButtonContainer = document.createElement('div');
+    addButtonContainer.className = 'dialog-list-add-button';
+    addButtonContainer.style.marginTop = 'var(--spacing-md)';
+    addButtonContainer.style.textAlign = 'center';
+    
+    const addButtonBottom = document.createElement('button');
+    addButtonBottom.className = 'button-primary';
+    addButtonBottom.textContent = '+ セリフを追加';
+    addButtonBottom.id = 'addDialogBtnBottom';
+    
+    // セリフ追加処理を実行
+    addButtonBottom.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      handleAddDialog();
+    };
+    
+    addButtonContainer.appendChild(addButtonBottom);
+    dialogList.appendChild(addButtonContainer);
+    
     // セリフ一覧を再描画した後、イベントハンドラーを再設定
     setupEventHandlers();
   } catch (error) {
@@ -359,11 +380,8 @@ function setupEventHandlers() {
     addDialogBtn.removeEventListener('click', addDialogBtnHandler);
   }
   
-  // 新しいイベントハンドラーを作成
-  addDialogBtnHandler = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
+  // セリフ追加処理（共通関数）
+  const handleAddDialog = () => {
     console.log('セリフ追加ボタンがクリックされました', currentEventId);
     
     if (!currentEventId) {
@@ -389,6 +407,13 @@ function setupEventHandlers() {
     
     // UIを再描画
     renderDialogList(currentEvent.dialogs);
+  };
+  
+  // 新しいイベントハンドラーを作成
+  addDialogBtnHandler = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleAddDialog();
   };
   
   // イベントハンドラーを追加
