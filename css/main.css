@@ -379,7 +379,11 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: #1a1a2e; /* 暗い夜の色 */
+  background: #1a1a2e; /* フォールバック背景色 */
+  background-image: url('../img/bg_school.png');
+  background-size: cover; /* 背景画像をカバー */
+  background-position: center; /* 中央に配置 */
+  background-repeat: no-repeat;
   z-index: 1; /* 最背面 */
 }
 
@@ -397,8 +401,8 @@
 }
 
 .preview-character {
-  width: 20%;
-  max-width: 200px;
+  width: 30%;
+  max-width: 400px;
   height: 100%;
   display: flex;
   align-items: flex-end;
@@ -408,8 +412,12 @@
 }
 
 .preview-character-image {
-  max-width: 100%;
-  max-height: 90%; /* キャラクターを表示 */
+  width: auto;
+  height: auto;
+  min-width: 300px; /* 最小サイズを設定 */
+  min-height: 300px;
+  max-width: 500px; /* 最大サイズを設定 */
+  max-height: 500px;
   object-fit: contain;
   display: none;
   position: relative;
