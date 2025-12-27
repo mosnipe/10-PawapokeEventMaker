@@ -385,7 +385,7 @@
   width: 100%;
   height: 100%; /* ゲーム画面の高さに合わせる */
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* 左右にキャラクターを配置 */
   align-items: flex-end;
   padding: var(--spacing-lg) var(--spacing-xl);
   padding-bottom: 33%; /* ダイアログエリアの高さ分だけ下に余白 */
@@ -394,8 +394,8 @@
 }
 
 .preview-character {
-  width: 30%;
-  max-width: 300px;
+  width: 20%;
+  max-width: 200px;
   height: 100%;
   display: flex;
   align-items: flex-end;
@@ -406,7 +406,7 @@
 
 .preview-character-image {
   max-width: 100%;
-  max-height: 85%; /* キャラクターがダイアログエリアに重ならないように */
+  max-height: 70%; /* キャラクターを小さく表示 */
   object-fit: contain;
   display: none;
   position: relative;
@@ -446,11 +446,11 @@
   border: 2px solid #90c695; /* 薄い緑のボーダー */
   border-radius: 8px;
   padding: var(--spacing-lg);
-  width: 90%;
-  max-width: 800px;
+  width: 85%;
+  max-width: 700px;
   font-size: var(--font-size-lg);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  min-height: 120px;
+  min-height: 100px;
   display: flex;
   align-items: center;
   position: relative;
@@ -472,11 +472,11 @@
 }
 
 .preview-dialog-box.left::before {
-  left: 80px;
+  left: 40px; /* 左上から上に向かって */
 }
 
 .preview-dialog-box.right::before {
-  right: 80px;
+  right: 40px; /* 右上から上に向かって */
 }
 
 /* 吹き出しの内側（背景色） */
@@ -493,11 +493,11 @@
 }
 
 .preview-dialog-box.left::after {
-  left: 82px;
+  left: 42px; /* 左上から上に向かって */
 }
 
 .preview-dialog-box.right::after {
-  right: 82px;
+  right: 42px; /* 右上から上に向かって */
 }
 
 .preview-dialog-text {
@@ -515,15 +515,56 @@
   justify-content: space-between;
   align-items: center;
   padding: var(--spacing-md);
-  background-color: var(--color-surface);
-  border-top: var(--border-width-thin) solid var(--border-color);
+  background-color: #e0e0e0; /* ライトグレー */
+  border-top: none;
   gap: var(--spacing-md);
 }
 
 .preview-progress {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
   font-weight: var(--font-weight-bold);
+}
+
+/* ナビゲーションボタンのスタイル */
+#previewPrevBtn {
+  background-color: #87ceeb; /* ライトブルー */
+  color: #333;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#previewPrevBtn:hover:not(:disabled) {
+  background-color: #6bb6d6;
+}
+
+#previewPrevBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#previewNextBtn {
+  background-color: #90ee90; /* ライトグリーン */
+  color: #333;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#previewNextBtn:hover:not(:disabled) {
+  background-color: #7acc7a;
+}
+
+#previewNextBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* モーダル内のプレビュー */
