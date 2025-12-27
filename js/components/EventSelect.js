@@ -5,6 +5,7 @@
 import { STORAGE_TYPE } from '../config.js';
 import * as eventService from '../services/eventService.js';
 import * as googleSheetsService from '../services/googleSheetsService.js';
+import { replaceWithLoading } from '../utils/loading.js';
 
 // ストレージタイプに応じてサービスを選択
 const service = STORAGE_TYPE === 'googleSheets' ? googleSheetsService : eventService;
@@ -16,26 +17,39 @@ const service = STORAGE_TYPE === 'googleSheets' ? googleSheetsService : eventSer
 export async function renderEventSelect(onEventSelect) {
   const eventSelectList = document.getElementById('eventSelectList');
   const emptyState = document.getElementById('emptyStateSelect');
-  const events = await service.getAllEvents();
   
-  // 空の状態を表示/非表示
-  if (events.length === 0) {
-    eventSelectList.style.display = 'none';
-    emptyState.style.display = 'block';
-    return;
+  // ローディング表示
+  const restoreEventSelectList = replaceWithLoading(eventSelectList, 'イベントを読み込み中...');
+  
+  try {
+    const events = await service.getAllEvents();
+    
+    // ローディングを非表示
+    restoreEventSelectList();
+    
+    // 空の状態を表示/非表示
+    if (events.length === 0) {
+      eventSelectList.style.display = 'none';
+      emptyState.style.display = 'block';
+      return;
+    }
+    
+    eventSelectList.style.display = 'grid';
+    emptyState.style.display = 'none';
+    
+    // 既存のカードをクリア
+    eventSelectList.innerHTML = '';
+    
+    // イベントカードを生成
+    events.forEach(event => {
+      const card = createEventSelectCard(event, onEventSelect);
+      eventSelectList.appendChild(card);
+    });
+  } catch (error) {
+    // エラー時もローディングを非表示
+    restoreEventSelectList();
+    throw error;
   }
-  
-  eventSelectList.style.display = 'grid';
-  emptyState.style.display = 'none';
-  
-  // 既存のカードをクリア
-  eventSelectList.innerHTML = '';
-  
-  // イベントカードを生成
-  events.forEach(event => {
-    const card = createEventSelectCard(event, onEventSelect);
-    eventSelectList.appendChild(card);
-  });
 }
 
 /**
