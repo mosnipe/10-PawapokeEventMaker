@@ -43,6 +43,7 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: var(--spacing-lg);
+  flex: 1;
 }
 
 /* ============================================
@@ -808,7 +809,7 @@
   background-color: var(--color-surface);
   border-top: var(--border-width-thin) solid var(--border-color);
   padding: var(--spacing-lg);
-  margin-top: var(--spacing-2xl);
+  margin-top: auto;
 }
 
 .footer-content {
