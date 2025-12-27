@@ -360,12 +360,12 @@
 }
 
 .preview-game-screen {
-  flex: 1;
-  min-height: 60vh;
   position: relative;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  height: 60vh; /* 固定の高さ */
+  min-height: 400px;
+  max-height: 600px;
+  flex-shrink: 0; /* 縮小しない */
 }
 
 /* 背景レイヤー（キャラクターの奥） */
@@ -374,7 +374,7 @@
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
+  height: 100%; /* ゲーム画面の高さに合わせる */
   background: linear-gradient(to bottom, #2a2a2a 0%, #2a2a2a 50%, var(--color-textbox-bg) 50%, var(--color-textbox-bg) 100%);
   z-index: 1; /* 最背面 */
 }
@@ -382,12 +382,15 @@
 /* キャラクターレイヤー（背景の前） */
 .preview-character-layer {
   position: relative;
-  flex: 1;
+  width: 100%;
+  height: 100%; /* ゲーム画面の高さに合わせる */
   display: flex;
   justify-content: space-around;
   align-items: flex-end;
   padding: var(--spacing-lg);
+  padding-bottom: 0; /* 下部のパディングを削除 */
   z-index: 10; /* 背景より前面 */
+  box-sizing: border-box;
 }
 
 .preview-character {

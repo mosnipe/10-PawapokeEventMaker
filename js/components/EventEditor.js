@@ -15,6 +15,12 @@ let currentEvent = null; // 編集中のイベントデータ（メモリ上に�
 let hasUnsavedChanges = false; // 未保存の変更があるかどうか
 let addDialogBtnHandler = null; // イベントハンドラーを保持
 
+// 利用可能な画像ファイルのリスト（imgフォルダ内の画像）
+const AVAILABLE_IMAGES = [
+  { path: './img/pawapoke.jpg', name: 'pawapoke.jpg' },
+  { path: './img/sakura.png', name: 'sakura.png' }
+];
+
 /**
  * イベント編集画面を表示
  * @param {string} eventId - イベントID
@@ -216,6 +222,27 @@ function createDialogItem(dialog, index) {
     }
   };
   
+  // 複製ボタン
+  const duplicateBtn = document.createElement('button');
+  duplicateBtn.className = 'button-secondary button-sm';
+  duplicateBtn.textContent = '複製';
+  duplicateBtn.onclick = () => {
+    if (currentEvent && currentEvent.dialogs[index]) {
+      // 現在のセリフを複製（テキスト、左右設定、画像設定を引き継ぐ）
+      const duplicatedDialog = {
+        text: dialog.text,
+        speaker: dialog.speaker,
+        imagePath: dialog.imagePath
+      };
+      // 現在のセリフの直後に挿入
+      currentEvent.dialogs.splice(index + 1, 0, duplicatedDialog);
+      hasUnsavedChanges = true;
+      
+      // UIを再描画
+      renderDialogList(currentEvent.dialogs);
+    }
+  };
+
   // 削除ボタン
   const deleteBtn = document.createElement('button');
   deleteBtn.className = 'button-secondary button-sm';
@@ -231,9 +258,10 @@ function createDialogItem(dialog, index) {
       renderDialogList(currentEvent.dialogs);
     }
   };
-  
+
   actions.appendChild(moveUpBtn);
   actions.appendChild(moveDownBtn);
+  actions.appendChild(duplicateBtn);
   actions.appendChild(deleteBtn);
   
   header.appendChild(number);
@@ -310,29 +338,39 @@ function createDialogItem(dialog, index) {
   speakerGroup.appendChild(speakerLabel);
   speakerGroup.appendChild(speakerOptions);
   
-  // 画像パス
+  // 画像設定
   const imageGroup = document.createElement('div');
   imageGroup.className = 'dialog-item-image';
-  
+
   const imageLabel = document.createElement('label');
   imageLabel.className = 'form-label';
-  imageLabel.textContent = '画像パス';
-  
-  const imageInput = document.createElement('input');
-  imageInput.type = 'text';
-  imageInput.className = 'input';
-  imageInput.value = dialog.imagePath || '';
-  imageInput.placeholder = './img/example.gif';
-  imageInput.oninput = () => {
-    if (currentEvent && currentEvent.dialogs[index]) {
-      // メモリ上のデータを更新
-      currentEvent.dialogs[index].imagePath = imageInput.value;
-      hasUnsavedChanges = true;
-    }
+  imageLabel.textContent = 'キャラクター画像';
+
+  const imageButtonContainer = document.createElement('div');
+  imageButtonContainer.className = 'image-button-container';
+  imageButtonContainer.style.display = 'flex';
+  imageButtonContainer.style.gap = 'var(--spacing-sm)';
+  imageButtonContainer.style.alignItems = 'center';
+
+  const imageButton = document.createElement('button');
+  imageButton.type = 'button';
+  imageButton.className = 'button-secondary button-sm';
+  imageButton.textContent = dialog.imagePath ? '画像を変更' : 'キャラクター画像を設定';
+  imageButton.onclick = () => {
+    showImageSelector(index);
   };
-  
+
+  const imagePathDisplay = document.createElement('span');
+  imagePathDisplay.className = 'image-path-display';
+  imagePathDisplay.style.fontSize = '0.875rem';
+  imagePathDisplay.style.color = 'var(--color-text-secondary)';
+  imagePathDisplay.textContent = dialog.imagePath ? `選択中: ${dialog.imagePath}` : '未設定';
+
+  imageButtonContainer.appendChild(imageButton);
+  imageButtonContainer.appendChild(imagePathDisplay);
+
   imageGroup.appendChild(imageLabel);
-  imageGroup.appendChild(imageInput);
+  imageGroup.appendChild(imageButtonContainer);
   
   settings.appendChild(speakerGroup);
   settings.appendChild(imageGroup);
@@ -420,5 +458,167 @@ function setupEventHandlers() {
   addDialogBtn.addEventListener('click', addDialogBtnHandler);
   
   console.log('セリフ追加ボタンのイベントハンドラーを設定しました', addDialogBtn);
+}
+
+/**
+ * 画像選択モーダルを表示
+ * @param {number} dialogIndex - セリフのインデックス
+ */
+function showImageSelector(dialogIndex) {
+  // モーダルオーバーレイを取得
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalMessage = document.getElementById('modalMessage');
+  const modalCancelBtn = document.getElementById('modalCancelBtn');
+  const modalConfirmBtn = document.getElementById('modalConfirmBtn');
+  
+  if (!modalOverlay || !modalTitle || !modalMessage || !modalCancelBtn || !modalConfirmBtn) {
+    console.error('モーダル要素が見つかりません');
+    return;
+  }
+  
+  // タイトルを設定
+  modalTitle.textContent = 'キャラクター画像を選択';
+  
+  // 画像選択UIを作成
+  const imageSelectorContainer = document.createElement('div');
+  imageSelectorContainer.className = 'image-selector-container';
+  imageSelectorContainer.style.display = 'grid';
+  imageSelectorContainer.style.gridTemplateColumns = 'repeat(auto-fill, minmax(150px, 1fr))';
+  imageSelectorContainer.style.gap = 'var(--spacing-md)';
+  imageSelectorContainer.style.maxHeight = '400px';
+  imageSelectorContainer.style.overflowY = 'auto';
+  imageSelectorContainer.style.padding = 'var(--spacing-md)';
+  
+  // 「画像なし」オプションを追加
+  const noImageOption = document.createElement('div');
+  noImageOption.className = 'image-option';
+  noImageOption.style.cursor = 'pointer';
+  noImageOption.style.border = '2px solid var(--color-border)';
+  noImageOption.style.borderRadius = 'var(--border-radius)';
+  noImageOption.style.padding = 'var(--spacing-md)';
+  noImageOption.style.textAlign = 'center';
+  noImageOption.style.transition = 'all 0.2s';
+  
+  noImageOption.onmouseenter = () => {
+    noImageOption.style.borderColor = 'var(--color-primary)';
+    noImageOption.style.backgroundColor = 'var(--color-bg-secondary)';
+  };
+  noImageOption.onmouseleave = () => {
+    noImageOption.style.borderColor = 'var(--color-border)';
+    noImageOption.style.backgroundColor = 'transparent';
+  };
+  
+  const noImageLabel = document.createElement('div');
+  noImageLabel.textContent = '画像なし';
+  noImageLabel.style.fontSize = '0.875rem';
+  noImageLabel.style.color = 'var(--color-text-secondary)';
+  
+  noImageOption.appendChild(noImageLabel);
+  noImageOption.onclick = () => {
+    selectImage(dialogIndex, '');
+    hideImageSelector();
+  };
+  
+  imageSelectorContainer.appendChild(noImageOption);
+  
+  // 各画像オプションを作成
+  AVAILABLE_IMAGES.forEach(image => {
+    const imageOption = document.createElement('div');
+    imageOption.className = 'image-option';
+    imageOption.style.cursor = 'pointer';
+    imageOption.style.border = '2px solid var(--color-border)';
+    imageOption.style.borderRadius = 'var(--border-radius)';
+    imageOption.style.padding = 'var(--spacing-sm)';
+    imageOption.style.transition = 'all 0.2s';
+    imageOption.style.display = 'flex';
+    imageOption.style.flexDirection = 'column';
+    imageOption.style.alignItems = 'center';
+    imageOption.style.gap = 'var(--spacing-xs)';
+    
+    imageOption.onmouseenter = () => {
+      imageOption.style.borderColor = 'var(--color-primary)';
+      imageOption.style.backgroundColor = 'var(--color-bg-secondary)';
+    };
+    imageOption.onmouseleave = () => {
+      imageOption.style.borderColor = 'var(--color-border)';
+      imageOption.style.backgroundColor = 'transparent';
+    };
+    
+    const imagePreview = document.createElement('img');
+    imagePreview.src = image.path;
+    imagePreview.style.width = '100%';
+    imagePreview.style.height = '100px';
+    imagePreview.style.objectFit = 'contain';
+    imagePreview.style.borderRadius = 'var(--border-radius-sm)';
+    imagePreview.onerror = () => {
+      imagePreview.style.display = 'none';
+    };
+    
+    const imageName = document.createElement('div');
+    imageName.textContent = image.name;
+    imageName.style.fontSize = '0.75rem';
+    imageName.style.color = 'var(--color-text-secondary)';
+    imageName.style.textAlign = 'center';
+    imageName.style.wordBreak = 'break-word';
+    
+    imageOption.appendChild(imagePreview);
+    imageOption.appendChild(imageName);
+    imageOption.onclick = () => {
+      selectImage(dialogIndex, image.path);
+      hideImageSelector();
+    };
+    
+    imageSelectorContainer.appendChild(imageOption);
+  });
+  
+  // メッセージエリアに画像選択UIを設定
+  modalMessage.innerHTML = '';
+  modalMessage.appendChild(imageSelectorContainer);
+  
+  // ボタンを非表示（画像選択はクリックで閉じる）
+  modalCancelBtn.style.display = 'none';
+  modalConfirmBtn.style.display = 'none';
+  
+  // モーダルを表示
+  modalOverlay.style.display = 'flex';
+  
+  // モーダルオーバーレイのクリックで閉じる
+  const handleOverlayClick = (e) => {
+    if (e.target === modalOverlay) {
+      hideImageSelector();
+      modalOverlay.removeEventListener('click', handleOverlayClick);
+    }
+  };
+  modalOverlay.addEventListener('click', handleOverlayClick);
+}
+
+/**
+ * 画像選択モーダルを非表示
+ */
+function hideImageSelector() {
+  const modalOverlay = document.getElementById('modalOverlay');
+  if (modalOverlay) {
+    modalOverlay.style.display = 'none';
+  }
+}
+
+/**
+ * 画像を選択してセリフに設定
+ * @param {number} dialogIndex - セリフのインデックス
+ * @param {string} imagePath - 選択した画像のパス
+ */
+function selectImage(dialogIndex, imagePath) {
+  if (!currentEvent || !currentEvent.dialogs[dialogIndex]) {
+    console.error('セリフが見つかりません');
+    return;
+  }
+  
+  // メモリ上のデータを更新
+  currentEvent.dialogs[dialogIndex].imagePath = imagePath;
+  hasUnsavedChanges = true;
+  
+  // UIを再描画
+  renderDialogList(currentEvent.dialogs);
 }
 
