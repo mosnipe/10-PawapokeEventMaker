@@ -165,7 +165,31 @@ export function renderDialogList(dialogs) {
     addButtonBottom.onclick = (e) => {
       e.preventDefault();
       e.stopPropagation();
-      handleAddDialog();
+      
+      // セリフ追加処理
+      if (!currentEventId) {
+        console.error('currentEventIdが設定されていません');
+        alert('エラー: イベントIDが設定されていません');
+        return;
+      }
+      
+      if (!currentEvent) {
+        console.error('currentEventが設定されていません');
+        alert('エラー: イベントデータが読み込まれていません');
+        return;
+      }
+      
+      // メモリ上のデータにセリフを追加
+      const newDialog = {
+        text: '',
+        speaker: 'left',
+        imagePath: ''
+      };
+      currentEvent.dialogs.push(newDialog);
+      hasUnsavedChanges = true;
+      
+      // UIを再描画
+      renderDialogList(currentEvent.dialogs);
     };
     
     addButtonContainer.appendChild(addButtonBottom);

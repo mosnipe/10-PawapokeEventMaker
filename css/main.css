@@ -416,8 +416,8 @@
   height: auto;
   min-width: 300px; /* 最小サイズを設定 */
   min-height: 300px;
-  max-width: 500px; /* 最大サイズを設定 */
-  max-height: 500px;
+  max-width: 400px; /* 最大サイズを設定（500pxから400pxに下げる） */
+  max-height: 400px;
   object-fit: contain;
   display: none;
   position: relative;

@@ -82,8 +82,21 @@ function createPreviewContent() {
   closeBtn.className = 'button-secondary button-sm';
   closeBtn.textContent = '× 閉じる';
   closeBtn.onclick = () => {
-    // イベントを発火して閉じる処理をmain.jsで処理
-    window.dispatchEvent(new CustomEvent('closePreview'));
+    // プレビューを閉じる処理
+    // モーダルで表示されている場合はモーダルを閉じる
+    const modalOverlay = document.getElementById('modalOverlay');
+    if (modalOverlay && modalOverlay.style.display === 'flex') {
+      // モーダル内のプレビューの場合
+      cleanupPreview();
+      const previewContainerModal = document.getElementById('previewContainerModal');
+      if (previewContainerModal) {
+        previewContainerModal.innerHTML = '';
+      }
+      modalOverlay.style.display = 'none';
+    } else {
+      // フルスクリーンのプレビューの場合
+      window.dispatchEvent(new CustomEvent('closePreview'));
+    }
   };
   
   const title = document.createElement('h3');
