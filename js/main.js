@@ -182,6 +182,8 @@ async function showEventList() {
             }
           }
         );
+        // 確認ボタンのラベルを「削除する」に変更
+        document.getElementById('modalConfirmBtn').textContent = '削除する';
       }
     );
   } catch (error) {
@@ -265,6 +267,10 @@ function hideModal() {
   const cancelBtn = document.getElementById('modalCancelBtn');
   if (cancelBtn) {
     cancelBtn.textContent = 'キャンセル';
+  }
+  const confirmBtn = document.getElementById('modalConfirmBtn');
+  if (confirmBtn) {
+    confirmBtn.textContent = '一覧へ戻る';
   }
   // プレビューコンテナをクリア
   const previewContainerModal = document.getElementById('previewContainerModal');
